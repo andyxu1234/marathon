@@ -1,0 +1,306 @@
+{
+  "data": [
+    {
+      "id": "page-home",
+      "title": "首页",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1787811546000,
+      "canvasData": {
+        "x": 12,
+        "y": -431,
+        "group": 0,
+        "layoutSnapshot": {
+          "version": 1,
+          "contentHeight": 1186,
+          "viewportWidth": 375,
+          "sourceHash": "fnv1a-81cb44e5",
+          "measuredAt": 1787819274879
+        }
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/home.html",
+        "interactions": [
+          {
+            "domId": "banner-1:home.html",
+            "target": "pages/race-detail.html",
+            "targetPageId": "page-race-detail",
+            "type": "navigate",
+            "hideEdge": false
+          },
+          {
+            "domId": "banner-2:home.html",
+            "target": "pages/race-detail.html",
+            "targetPageId": "page-race-detail",
+            "type": "navigate",
+            "hideEdge": false
+          },
+          {
+            "domId": "banner-3:home.html",
+            "target": "pages/race-detail.html",
+            "targetPageId": "page-race-detail",
+            "type": "navigate",
+            "hideEdge": false
+          },
+          {
+            "domId": "banner-4:home.html",
+            "target": "pages/race-detail.html",
+            "targetPageId": "page-race-detail",
+            "type": "navigate",
+            "hideEdge": false
+          },
+          {
+            "domId": "race-card-1:home.html",
+            "target": "pages/race-detail.html",
+            "targetPageId": "page-race-detail",
+            "type": "navigate",
+            "hideEdge": false
+          },
+          {
+            "domId": "race-card-2:home.html",
+            "target": "pages/race-detail.html",
+            "targetPageId": "page-race-detail",
+            "type": "navigate",
+            "hideEdge": false
+          },
+          {
+            "domId": "race-card-3:home.html",
+            "target": "pages/race-detail.html",
+            "targetPageId": "page-race-detail",
+            "type": "navigate",
+            "hideEdge": false
+          },
+          {
+            "domId": "race-card-4:home.html",
+            "target": "pages/race-detail.html",
+            "targetPageId": "page-race-detail",
+            "type": "navigate",
+            "hideEdge": false
+          },
+          {
+            "domId": "race-card-5:home.html",
+            "target": "pages/race-detail.html",
+            "targetPageId": "page-race-detail",
+            "type": "navigate",
+            "hideEdge": false
+          },
+          {
+            "domId": "race-card-6:home.html",
+            "target": "pages/race-detail.html",
+            "targetPageId": "page-race-detail",
+            "type": "navigate",
+            "hideEdge": false
+          },
+          {
+            "domId": "nav-follow:home.html",
+            "target": "pages/follow.html",
+            "targetPageId": "page-follow",
+            "type": "navigate",
+            "hideEdge": false
+          },
+          {
+            "domId": "nav-mine:home.html",
+            "target": "pages/mine.html",
+            "targetPageId": "page-mine",
+            "type": "navigate",
+            "hideEdge": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-race-detail",
+      "title": "比赛详情",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1787811546000,
+      "canvasData": {
+        "x": 216,
+        "y": -431,
+        "group": 0,
+        "layoutSnapshot": {
+          "version": 1,
+          "contentHeight": 1228,
+          "viewportWidth": 375,
+          "sourceHash": "fnv1a-0b0f4fdc",
+          "measuredAt": 1787819274879
+        }
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/race-detail.html",
+        "interactions": [
+          {
+            "domId": "back-btn:race-detail.html",
+            "target": "pages/home.html",
+            "targetPageId": "page-home",
+            "type": "navigate",
+            "hideEdge": false
+          },
+          {
+            "domId": "follow-btn:race-detail.html",
+            "target": "pages/follow.html",
+            "targetPageId": "page-follow",
+            "type": "navigate",
+            "hideEdge": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-follow",
+      "title": "关注",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1787811546000,
+      "canvasData": {
+        "x": 372,
+        "y": -431,
+        "group": 0,
+        "layoutSnapshot": {
+          "version": 1,
+          "contentHeight": 1476,
+          "viewportWidth": 375,
+          "sourceHash": "fnv1a-ae798291",
+          "measuredAt": 1787819274879
+        }
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/follow.html",
+        "interactions": [
+          {
+            "domId": "add-race-entry:follow.html",
+            "target": "pages/add-race.html",
+            "targetPageId": "page-add-race",
+            "type": "navigate",
+            "hideEdge": false
+          },
+          {
+            "domId": "add-race-entry-2:follow.html",
+            "target": "pages/add-race.html",
+            "targetPageId": "page-add-race",
+            "type": "navigate",
+            "hideEdge": false
+          },
+          {
+            "domId": "nav-home:follow.html",
+            "target": "pages/home.html",
+            "targetPageId": "page-home",
+            "type": "navigate",
+            "hideEdge": false
+          },
+          {
+            "domId": "nav-mine:follow.html",
+            "target": "pages/mine.html",
+            "targetPageId": "page-mine",
+            "type": "navigate",
+            "hideEdge": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-mine",
+      "title": "我的",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1787811546000,
+      "canvasData": {
+        "x": 792,
+        "y": -431,
+        "group": 0,
+        "layoutSnapshot": {
+          "version": 1,
+          "contentHeight": 900,
+          "viewportWidth": 375,
+          "sourceHash": "fnv1a-59cd8385",
+          "measuredAt": 1787819274879
+        }
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/mine.html",
+        "interactions": [
+          {
+            "domId": "nav-home:mine.html",
+            "target": "pages/home.html",
+            "targetPageId": "page-home",
+            "type": "navigate",
+            "hideEdge": false
+          },
+          {
+            "domId": "nav-follow:mine.html",
+            "target": "pages/follow.html",
+            "targetPageId": "page-follow",
+            "type": "navigate",
+            "hideEdge": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-add-race",
+      "title": "添加赛事",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1787817332000,
+      "canvasData": {
+        "x": 576,
+        "y": -431,
+        "group": 0,
+        "layoutSnapshot": {
+          "version": 1,
+          "contentHeight": 1134,
+          "viewportWidth": 375,
+          "sourceHash": "fnv1a-07d90807",
+          "measuredAt": 1787819274879
+        }
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/add-race.html",
+        "interactions": [
+          {
+            "domId": "back-btn:add-race.html",
+            "target": "pages/follow.html",
+            "targetPageId": "page-follow",
+            "type": "navigate",
+            "hideEdge": false
+          },
+          {
+            "domId": "submit-btn:add-race.html",
+            "target": "pages/follow.html",
+            "targetPageId": "page-follow",
+            "type": "navigate",
+            "hideEdge": false
+          },
+          {
+            "domId": "nav-home:add-race.html",
+            "target": "pages/home.html",
+            "targetPageId": "page-home",
+            "type": "navigate",
+            "hideEdge": false
+          },
+          {
+            "domId": "nav-follow:add-race.html",
+            "target": "pages/follow.html",
+            "targetPageId": "page-follow",
+            "type": "navigate",
+            "hideEdge": false
+          },
+          {
+            "domId": "nav-mine:add-race.html",
+            "target": "pages/mine.html",
+            "targetPageId": "page-mine",
+            "type": "navigate",
+            "hideEdge": false
+          }
+        ]
+      }
+    }
+  ],
+  "config": {
+    "autoLayout": false,
+    "deviceType": "mobile",
+    "projectName": "马拉松赛事小程序",
+    "visualEditorEnabled": false,
+    "showEdge": false
+  }
+}

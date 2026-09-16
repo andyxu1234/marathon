@@ -1,0 +1,199 @@
+// ============================================================
+// 全局 SCSS 变量 —— 晨曦跑道 (Dawn Track) 主题
+// 此文件由 Taro config 的 sass.resource 自动注入到每个 .scss，
+// 不要在页面里 @use 它。
+//
+// ⚠️ 只放「变量 / mixin / 函数」，不要放 @keyframes 或任何能产出
+//    CSS 的规则 —— 否则每个 scss 都会输出一份，产物体积爆炸。
+//    @keyframes 统一写在 styles/global.scss（只在 app 引入一次）。
+// ============================================================
+
+// ===== 品牌双主色：珊瑚橙（能量） × 青柠（速度）=====
+$coral:        #FF5C38;   // 主色：行动、报名中、激活态
+$coral-deep:   #E8411C;   // 按压 / 描边加深
+$coral-soft:   #FFE9E2;   // 浅底（标签、图标底）
+$coral-mist:   #FFF3EF;   // 极浅底（区块背景）
+
+$lime:         #D8F34A;   // 强调：高亮数字、进度、成就
+$lime-deep:    #B8D62B;
+$lime-soft:    #F2F9D8;
+$lime-ink:     #3D4A12;   // 青柠底上的文字色（保证对比度）
+
+// ===== 纸面层级（暖白，杜绝纯白 + 冷灰）=====
+$paper:        #FFF8F3;   // app 底色
+$card:         #FFFFFF;   // 卡片
+$sand:         #F7F0E9;   // 下沉面（输入框、占位块）
+$sand-deep:    #EFE4D9;   // 更沉一级（分隔、禁用）
+
+// ===== 墨色（暖调黑，比 #000 更柔）=====
+$ink:          #14100E;   // 标题 / 主文字
+$ink-2:        #6B5F58;   // 次要文字
+$ink-3:        #A3968D;   // 辅助 / 占位
+$ink-inv:      #FFF8F3;   // 深底上的文字
+
+// ===== 线条 =====
+$line:         #EFE4D9;   // 常规分隔线
+$line-soft:    #F7F0E9;   // 极浅分隔
+$line-hard:    #14100E;   // 硬描边（强调结构时用，慎用）
+
+// ===== 状态色（全部走暖调，避免彩虹色）=====
+$st-open:      #FF5C38;   // 报名中 —— 珊瑚
+$st-open-bg:   #FFE9E2;
+$st-soon:      #E8940C;   // 即将开跑 —— 琥珀
+$st-soon-bg:   #FDF1DA;
+$st-live:      #1F9D5B;   // 比赛中 —— 翠绿
+$st-live-bg:   #DFF5E8;
+$st-done:      #A3968D;   // 已结束 —— 石灰
+$st-done-bg:   #F2EDE8;
+
+// ===== 圆角（晨曦跑道是圆润语言，跨度拉大）=====
+$r-xs:         8px;
+$r-sm:         12px;
+$r-md:         18px;
+$r-lg:         24px;
+$r-xl:         32px;
+$r-2xl:        40px;
+$r-pill:       999px;
+
+// ===== 阴影（棕调暖影，不用灰黑 —— 灰黑影会让暖色发脏）=====
+$sh-1:         0 2px 6px rgba(92, 45, 28, 0.05);
+$sh-2:         0 6px 18px rgba(92, 45, 28, 0.07);
+$sh-3:         0 14px 34px rgba(92, 45, 28, 0.11);
+$sh-coral:     0 8px 22px rgba(255, 92, 56, 0.26);
+$sh-lime:      0 8px 22px rgba(184, 214, 43, 0.30);
+$sh-inset:     inset 0 1px 0 rgba(255, 255, 255, 0.6);
+
+// ===== 字体 =====
+$font-sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "HarmonyOS Sans SC",
+            "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+// 数字专用：窄体 + 强字重，运动计分牌感
+$font-num: "DIN Alternate", "Bahnschrift", "SF Pro Display", "Oswald",
+           -apple-system, "PingFang SC", sans-serif;
+
+// ===== 动效常量 =====
+$ease-out:    cubic-bezier(0.22, 1, 0.36, 1);        // 出场：快出慢收，丝滑
+$ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);      // 轻微回弹
+$ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+$dur-fast:    180ms;
+$dur-base:    320ms;
+$dur-slow:    520ms;
+
+// ============================================================
+// 兼容别名 —— 旧页面/组件仍在用这些名字，映射到新色值，
+// 保证分批重构期间不出现变量未定义。全部重做完成后可清理。
+// ============================================================
+$brand:              $coral;
+$brand-foreground:   #FFFFFF;
+$brand-light:        $coral-soft;
+
+$bg-primary:         $paper;
+$bg-secondary:       $card;
+$bg-card:            $card;
+$bg-muted:           $sand;
+$bg-input:           $sand;
+
+$text1:              $ink;
+$text2:              $ink-2;
+$text3:              $ink-3;
+
+$border:             $line;
+// $line 已在上方定义（#EFE4D9），此处不再重复赋值
+
+$success:            #1F9D5B;
+$success-light:      #DFF5E8;
+$warning:            #E8940C;
+$warning-light:      #FDF1DA;
+$error:              #E23A2E;
+$error-light:        #FCE6E3;
+$info:               #2E9BD6;
+$info-light:         #E1F1FA;
+
+$radius-sm:          $r-xs;
+$radius-md:          $r-sm;
+$radius-lg:          $r-md;
+$radius-xl:          $r-lg;
+$radius-pill:        $r-pill;
+$radius:             $r-lg;
+
+$shadow-sm:          $sh-1;
+$shadow-md:          $sh-2;
+$shadow-lg:          $sh-3;
+
+$primary:            $coral;
+$primary-foreground: #FFFFFF;
+$danger:             #E23A2E;
+$danger-light:       #FCE6E3;
+
+// ============================================================
+// 动效 mixin
+// 设计原则：元素默认可见（opacity:1），用 animation-fill-mode: both
+// 在 delay 期间保持起始态。万一运行环境不执行动画，元素依然是可见的，
+// 不会出现「动画没跑、内容永久隐藏」的灾难。
+// ============================================================
+
+// 上浮淡入（列表项、卡片的主力入场）
+// 位移距离固定在 keyframes 里（28px）—— 不在 @keyframes 内用 CSS 变量，
+// 部分小程序基础库对 keyframes 里的 var() 支持不稳定。
+@mixin enter-up($delay: 0ms, $dur: 520ms) {
+  animation: dawnEnterUp $dur $ease-out $delay both;
+}
+
+// 纯淡入
+@mixin enter-fade($delay: 0ms, $dur: 420ms) {
+  animation: dawnFadeIn $dur $ease-out $delay both;
+}
+
+// 轻微放大淡入（Hero、空态插画）
+@mixin enter-pop($delay: 0ms, $dur: 520ms) {
+  animation: dawnPopIn $dur $ease-spring $delay both;
+}
+
+// 从左滑入（标题、TabBar）
+@mixin enter-left($delay: 0ms, $dur: 480ms) {
+  animation: dawnEnterLeft $dur $ease-out $delay both;
+}
+
+// 遮罩淡入
+@mixin mask-in($dur: 260ms) {
+  animation: dawnFadeIn $dur $ease-out both;
+}
+
+// 面板下拉展开（高度 + 透明度）
+@mixin panel-drop($dur: 300ms) {
+  animation: dawnDropDown $dur $ease-out both;
+  transform-origin: top center;
+}
+
+// 列表 stagger：给前 $count 个子元素递增 delay
+// 用法：@include stagger(8, 60ms);
+@mixin stagger($count: 10, $step: 50ms, $base: 80ms) {
+  @for $i from 1 through $count {
+    > *:nth-child(#{$i}) {
+      animation-delay: #{$base + $step * ($i - 1)};
+    }
+  }
+}
+
+// 按压反馈：小程序端 :active 不可靠，用 transform 过渡 + JS 状态类更稳。
+// 这里提供纯 CSS 版本作为兜底增强。
+@mixin pressable($scale: 0.975) {
+  transition: transform $dur-fast $ease-out, box-shadow $dur-fast $ease-out;
+  &.is-pressed {
+    transform: scale($scale);
+  }
+}
+
+// 通用卡片外观（晨曦跑道：白卡 + 暖影 + 大圆角）
+@mixin dawn-card($radius: $r-lg, $pad: 28px) {
+  background: $card;
+  border-radius: $radius;
+  padding: $pad;
+  box-shadow: $sh-1;
+}
+
+// 全宽横向滚动条隐藏
+@mixin no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}

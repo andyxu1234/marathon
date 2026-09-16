@@ -1,0 +1,6 @@
+// app 全局样式入口（由 app.ts 引入）
+// 变量已由 Taro config 的 sass.resource 全局注入，此处不需要再引 variables.scss。
+// global.scss 里也用到了 $bg-primary 等变量，不能用 @use（作用域隔离导致变量未定义），
+// 故保留 @import；弃用告警通过 sass-loader 的 sassOptions.silenceDeprecations 注入
+// + 环境变量 SASS_SILENCE_DEPRECATIONS=import 双重消除。
+@import './styles/global.scss';

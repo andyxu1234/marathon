@@ -1,0 +1,510 @@
+/* 关注页 —— 晨曦跑道 (Dawn Track)
+   卡片默认折叠只露一行，展开后是完整的报名/缴费/中签/完赛记事本 */
+
+.page-follow {
+  min-height: 100vh;
+  background: $paper;
+  padding-bottom: 200px;
+}
+
+/* ============================================================
+   Hero —— 珊瑚渐变，与首页同一语言
+   ============================================================ */
+
+.follow-header {
+  position: relative;
+  margin: 24px 28px 0;
+  padding: 34px 32px;
+  border-radius: $r-xl;
+  background: linear-gradient(135deg, #FF7F57 0%, #FF5C38 46%, #EA4020 100%);
+  box-shadow: $sh-coral;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  animation: dawnEnterUp 540ms $ease-out both;
+
+  /* 斜向光条 */
+  &::after {
+    content: '';
+    position: absolute;
+    top: -30%;
+    right: 40px;
+    width: 160px;
+    height: 160%;
+    transform: skewX(-18deg);
+    background: repeating-linear-gradient(
+      -45deg,
+      rgba(255, 255, 255, 0.13) 0 8px,
+      rgba(255, 255, 255, 0) 8px 22px
+    );
+    pointer-events: none;
+  }
+}
+
+.follow-header__left {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+
+.follow-header__title {
+  display: block;
+  font-size: 40px;
+  font-weight: 700;
+  color: #FFFFFF;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
+}
+
+.follow-header__sub {
+  display: block;
+  margin-top: 6px;
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.follow-header__add {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 64px;
+  padding: 0 24px;
+  border-radius: $r-pill;
+  background: rgba(255, 255, 255, 0.22);
+  color: #FFFFFF;
+  font-size: 25px;
+  font-weight: 600;
+  transition: transform 180ms $ease-out, background-color 180ms $ease-out;
+}
+
+/* ============================================================
+   过滤 chips
+   ============================================================ */
+
+.filter-bar {
+  padding: 20px 0 4px;
+}
+
+.filter-scroll {
+  white-space: nowrap;
+  height: 66px;
+}
+
+.filter-chips {
+  display: inline-flex;
+  gap: 12px;
+  padding: 0 28px;
+}
+
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 62px;
+  padding: 0 24px;
+  border-radius: $r-pill;
+  background: #FFFFFF;
+  box-shadow: $sh-1;
+  transition: background-color 220ms $ease-out;
+}
+
+.filter-chip.active,
+.filter-chip.open {
+  background: $coral-soft;
+  box-shadow: none;
+}
+
+.filter-chip-label {
+  font-size: 25px;
+  font-weight: 500;
+  color: $ink-2;
+  line-height: 1;
+}
+
+.filter-chip.active .filter-chip-label,
+.filter-chip.open .filter-chip-label {
+  color: $coral-deep;
+  font-weight: 600;
+}
+
+.filter-chip-clear {
+  background: $coral-soft;
+  box-shadow: none;
+
+  .filter-chip-label {
+    color: $coral-deep;
+  }
+}
+
+/* ============================================================
+   下拉浮层
+   ============================================================ */
+
+.dropdown-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgba(20, 16, 14, 0.32);
+  animation: dawnFadeIn 240ms $ease-out both;
+}
+
+.dropdown-panel {
+  position: absolute;
+  min-width: 240px;
+  background: #FFFFFF;
+  border-radius: $r-md;
+  box-shadow: $sh-3;
+  overflow: hidden;
+  animation: dawnDropDown 280ms $ease-out both;
+}
+
+/* ⚠️ scroll-view 高度必须写在自身上 */
+.dropdown-list {
+  max-height: 480px;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 28px;
+}
+
+.dropdown-item.selected {
+  background: $coral-mist;
+}
+
+.dropdown-item-label {
+  font-size: 26px;
+  color: $ink-2;
+  line-height: 1.4;
+}
+
+.dropdown-item.selected .dropdown-item-label {
+  color: $coral;
+  font-weight: 600;
+}
+
+.dropdown-item.disabled-row .dropdown-item-label {
+  color: $ink-3;
+}
+
+/* ============================================================
+   列表头
+   ============================================================ */
+
+.follow-list-wrap {
+  padding: 8px 28px 0;
+}
+
+.follow-list-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 16px 0 18px;
+}
+
+.follow-list-title {
+  font-size: 34px;
+  font-weight: 700;
+  color: $ink;
+  letter-spacing: -0.01em;
+}
+
+.follow-list-count {
+  font-size: 24px;
+  color: $ink-3;
+}
+
+/* ============================================================
+   赛事卡（折叠）
+   ============================================================ */
+
+.follow-card-list {
+  /* 卡片入场 stagger 由 tsx 内联 animation-delay 提供 */
+}
+
+.follow-card {
+  background: #FFFFFF;
+  border-radius: $r-lg;
+  box-shadow: $sh-1;
+  margin-bottom: 20px;
+  overflow: hidden;
+  animation: dawnEnterUp 500ms $ease-out both;
+}
+
+.follow-card.is-expanded {
+  box-shadow: $sh-2;
+}
+
+.follow-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 26px 28px;
+}
+
+.follow-card__head-left {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.follow-card__name {
+  font-size: 30px;
+  font-weight: 600;
+  color: $ink;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+.follow-card__tags {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.race-type-tag {
+  padding: 4px 16px;
+  border-radius: $r-pill;
+  background: $sand;
+  color: $ink-2;
+  font-size: 21px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.race-type-tag--full {
+  background: $coral-soft;
+  color: $coral-deep;
+}
+
+.custom-tag {
+  padding: 4px 14px;
+  border-radius: $r-pill;
+  background: $lime-soft;
+  color: $lime-ink;
+  font-size: 21px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.follow-card__head-right {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.follow-card__summary {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.follow-card__summary-line {
+  font-size: 23px;
+  color: $ink-2;
+  line-height: 1.35;
+}
+
+.follow-card__summary-line--muted {
+  color: $ink-3;
+}
+
+.follow-card__summary-em {
+  font-weight: 600;
+}
+
+.follow-card__summary-em--success { color: #1F9D5B; }
+.follow-card__summary-em--warning { color: #B8740A; }
+.follow-card__summary-em--info    { color: #2E9BD6; }
+.follow-card__summary-em--muted   { color: $ink-3; }
+
+/* ============================================================
+   展开详情区
+   ============================================================ */
+
+.follow-card__detail {
+  padding: 4px 28px 24px;
+  border-top: 1px solid $line;
+  padding-top: 24px;
+  animation: dawnFadeIn 280ms $ease-out both;
+}
+
+.follow-card__status {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.status-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.status-label {
+  flex-shrink: 0;
+  width: 72px;
+  font-size: 25px;
+  color: $ink-3;
+  line-height: 1.4;
+}
+
+.status-options {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.status-opt {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 60px;
+  padding: 0 22px;
+  border-radius: $r-pill;
+  background: $sand;
+  color: $ink-2;
+  font-size: 24px;
+  font-weight: 500;
+  transition: background-color 200ms $ease-out, color 200ms $ease-out;
+}
+
+.status-opt.active {
+  font-weight: 600;
+}
+
+.status-opt.active.success {
+  background: $st-live-bg;
+  color: #15814A;
+}
+
+.status-opt.active.warning {
+  background: $st-soon-bg;
+  color: #B8740A;
+}
+
+.status-opt.active.info {
+  background: $info-light;
+  color: #1F7FAE;
+}
+
+.status-opt.active.muted {
+  background: $st-done-bg;
+  color: #8A7C71;
+}
+
+/* ===== 输入项 ===== */
+
+.time-input-wrap,
+.bib-input-wrap,
+.fee-wrap {
+  flex: 1;
+  min-width: 0;
+  height: 64px;
+  padding: 0 24px;
+  border-radius: $r-md;
+  background: $sand;
+  display: flex;
+  align-items: center;
+}
+
+.time-input,
+.bib-input,
+.fee-input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  font-size: 26px;
+  color: $ink;
+}
+
+.fee-wrap {
+  gap: 4px;
+}
+
+.fee-unit {
+  font-size: 26px;
+  color: $ink-3;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   卡片底部
+   ============================================================ */
+
+.follow-card__footer {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid $line-soft;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.follow-card__countdown {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 24px;
+  color: $ink-2;
+  flex: 1;
+  min-width: 0;
+}
+
+.follow-card__actions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.follow-card__go-reg {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 25px;
+  font-weight: 600;
+  color: $coral;
+}
+
+.follow-card__unfavorite {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 24px;
+  color: #E23A2E;
+}
+
+/* ============================================================
+   添加自定义赛事 —— 虚线按钮，暗示"补一个"
+   ============================================================ */
+
+.add-race-btn {
+  margin: 8px 0 24px;
+  height: 104px;
+  border-radius: $r-lg;
+  border: 2px dashed #F5C4B4;
+  background: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 27px;
+  font-weight: 600;
+  color: $coral;
+  animation: dawnEnterUp 500ms $ease-out 200ms both;
+}

@@ -1,0 +1,467 @@
+/* 首页 —— 晨曦跑道 (Dawn Track)
+   记忆点：珊瑚渐变大数字 Hero + 压在 Hero 底部的胶囊搜索框 */
+
+.page-home {
+  min-height: 100vh;
+  background: $paper;
+  padding-bottom: 220px;
+}
+
+/* ============================================================
+   Hero —— 珊瑚渐变 + 斜向速度光条
+   ============================================================ */
+
+.hero {
+  position: relative;
+  margin: 24px 28px 0;
+  padding: 36px 32px 26px;
+  border-radius: $r-xl;
+  background: linear-gradient(135deg, #FF7F57 0%, #FF5C38 46%, #EA4020 100%);
+  box-shadow: $sh-coral;
+  overflow: hidden;
+  animation: dawnEnterUp 560ms $ease-out both;
+}
+
+/* 斜向光条：几何条带而非装饰圆，不抢内容、不遮字 */
+.hero__stripes {
+  position: absolute;
+  top: -20%;
+  right: -60px;
+  width: 260px;
+  height: 140%;
+  transform: skewX(-18deg);
+  background: repeating-linear-gradient(
+    -45deg,
+    rgba(255, 255, 255, 0.14) 0 8px,
+    rgba(255, 255, 255, 0) 8px 24px
+  );
+  pointer-events: none;
+}
+
+.hero__inner {
+  position: relative;
+  z-index: 1;
+}
+
+.hero__eyebrow {
+  display: block;
+  font-size: 24px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.82);
+  letter-spacing: 0.06em;
+}
+
+.hero__total {
+  margin-top: 12px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.hero__total-num {
+  font-size: 88px;
+  line-height: 1;
+  font-weight: 700;
+  color: #FFFFFF;
+  animation: dawnNumPop 600ms $ease-spring 120ms both;
+}
+
+.hero__total-unit {
+  font-size: 26px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.hero__grid {
+  margin-top: 18px;
+  display: flex;
+  gap: 12px;
+}
+
+.hero__cell {
+  flex: 1;
+  min-width: 0;
+  padding: 16px 14px;
+  border-radius: $r-md;
+  background: rgba(255, 255, 255, 0.16);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: transform 180ms $ease-out, background-color 180ms $ease-out;
+}
+
+.hero__cell-num {
+  font-size: 38px;
+  line-height: 1;
+  color: #FFFFFF;
+  animation: dawnNumPop 540ms $ease-spring both;
+}
+
+.hero__cell:nth-child(1) .hero__cell-num { animation-delay: 200ms; }
+.hero__cell:nth-child(2) .hero__cell-num { animation-delay: 280ms; }
+.hero__cell:nth-child(3) .hero__cell-num { animation-delay: 360ms; }
+
+.hero__cell-label {
+  font-size: 22px;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+/* ============================================================
+   搜索框 —— 独立留白，与 Hero 完全分离
+   ============================================================ */
+
+.search {
+  position: relative;
+  z-index: 5;
+  margin: 32px 28px 0;
+  height: 88px;
+  padding: 0 28px;
+  background: #FFFFFF;
+  border-radius: $r-pill;
+  box-shadow: $sh-2;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  animation: dawnEnterUp 520ms $ease-out 180ms both;
+}
+
+.search__input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;               /* 撑满父容器 88px，由 flex align-items:center 保证垂直居中 */
+  line-height: 1.4;           /* 不硬撑满，让 native input 自己排版，避免抖音端基线错位 */
+  padding: 0;                 /* 抹掉 weapp Input / H5 input 默认内边距 */
+  font-size: 25px;            /* 与下方过滤 chip (.filter-tab__label) 字号一致 */
+  color: $ink;
+  background: transparent;
+  vertical-align: middle;     /* H5 浏览器：防 input baseline 偏顶 */
+  box-sizing: border-box;     /* H5 浏览器：让 height = line-height 严格相等 */
+}
+
+.search__placeholder {
+  color: $ink-3 !important;
+  font-size: 25px !important; /* 与 .filter-tab__label 25px 对齐 */
+  line-height: 1.4 !important;
+  vertical-align: middle;
+}
+
+.search__clear {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: $sand;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   筛选栏
+   ============================================================ */
+
+.filter-wrapper {
+  position: relative;
+  // 必须高于 .filter-dropdown-mask(z:25)，否则遮罩会盖住 dropdown 拦截点击
+  z-index: 40;
+}
+
+.filter-tabs {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 24px 28px 12px;
+}
+
+.filter-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 22px;
+  border-radius: $r-pill;
+  background: #FFFFFF;
+  box-shadow: $sh-1;
+  flex-shrink: 0;
+  transition: background-color 200ms $ease-out;
+}
+
+.filter-tab--active,
+.filter-tab--filled {
+  background: $coral-soft;
+  box-shadow: none;
+}
+
+.filter-tab__label {
+  font-size: 25px;
+  font-weight: 500;
+  color: $ink-2;
+  line-height: 1.4;
+}
+
+.filter-tab__label--active,
+.filter-tab__label--filled {
+  color: $coral-deep;
+  font-weight: 600;
+}
+
+.filter-clear {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px 10px 18px;
+  border-radius: $r-pill;
+  background: $coral-soft;
+  flex-shrink: 0;
+}
+
+.filter-clear__text {
+  font-size: 24px;
+  color: $coral-deep;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.filter-clear__count {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: $r-pill;
+  background: $coral;
+  color: #FFFFFF;
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
+  line-height: 32px;
+}
+
+/* ============================================================
+   下拉面板
+   ⚠️ scroll-view 的高度必须直接写在 scroll-view 自身上，
+      靠父级 max-height 约束会被内容撑破（踩过坑）。
+   ============================================================ */
+
+.filter-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  background: #FFFFFF;
+  border-radius: $r-lg;
+  box-shadow: $sh-3;
+  overflow: hidden;
+  animation: dawnDropDown 300ms $ease-out both;
+}
+
+.region-cascade {
+  display: flex;
+  height: 520px;
+  max-height: 46vh;
+}
+
+.region-cascade__left {
+  width: 40%;
+  height: 520px;
+  max-height: 46vh;
+  background: $sand;
+}
+
+.region-cascade__right {
+  flex: 1;
+  height: 520px;
+  max-height: 46vh;
+  background: #FFFFFF;
+}
+
+.region-item {
+  position: relative;
+  padding: 24px 24px;
+  display: flex;
+  align-items: center;
+}
+
+.region-item--selected {
+  background: #FFFFFF;
+}
+
+.region-item__text {
+  font-size: 26px;
+  color: $ink-2;
+  line-height: 1.4;
+}
+
+.region-item__text--selected {
+  color: $coral;
+  font-weight: 600;
+}
+
+.region-item__border {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 32px;
+  border-radius: 0 4px 4px 0;
+  background: $coral;
+}
+
+.filter-single-list {
+  height: 520px;
+  max-height: 46vh;
+}
+
+.filter-item {
+  position: relative;
+  padding: 24px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.filter-item--selected {
+  background: $coral-mist;
+}
+
+.filter-item__text {
+  font-size: 26px;
+  color: $ink-2;
+  line-height: 1.4;
+}
+
+.filter-item__text--selected {
+  color: $coral;
+  font-weight: 600;
+}
+
+.filter-item__check {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.filter-dropdown-footer {
+  display: flex;
+  gap: 16px;
+  padding: 20px 28px;
+  border-top: 1px solid $line;
+}
+
+.filter-dropdown-btn {
+  flex: 1;
+  height: 84px;
+  border-radius: $r-pill;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 600;
+  transition: transform 180ms $ease-out;
+}
+
+.filter-dropdown-btn--reset {
+  background: $sand;
+  color: $ink-2;
+}
+
+.filter-dropdown-btn--confirm {
+  background: $coral;
+  color: #FFFFFF;
+  box-shadow: $sh-coral;
+}
+
+/* 遮罩 */
+.filter-dropdown-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 25;
+  background: rgba(20, 16, 14, 0.34);
+  animation: dawnFadeIn 260ms $ease-out both;
+}
+
+/* ============================================================
+   已选条件 chips
+   ============================================================ */
+
+.active-chips-scroll {
+  padding: 4px 28px 0;
+  white-space: nowrap;
+}
+
+.active-chips {
+  display: inline-flex;
+  gap: 12px;
+}
+
+.active-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px 10px 20px;
+  border-radius: $r-pill;
+  background: $coral-soft;
+}
+
+.active-chip__text {
+  font-size: 24px;
+  color: $coral-deep;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.active-chip__close {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255, 92, 56, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ============================================================
+   赛事列表
+   ============================================================ */
+
+.content-area {
+  padding: 8px 28px 0;
+}
+
+.content-area__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 16px 0 20px;
+}
+
+.content-area__title {
+  font-size: 34px;
+  font-weight: 700;
+  color: $ink;
+  letter-spacing: -0.01em;
+}
+
+.content-area__count {
+  font-size: 24px;
+  color: $ink-3;
+}
+
+.load-more {
+  padding: 32px 0 8px;
+  text-align: center;
+}
+
+.load-more__text {
+  font-size: 24px;
+  color: $ink-3;
+}
+
+.load-more__text--loading {
+  color: $coral;
+}

@@ -1,0 +1,77 @@
+/* 自绘 TabBar —— 晨曦跑道风格
+   激活态：图标 + 文字**整颗**包在珊瑚药丸里（白圆 + 白字），
+   不激活：图标 + 文字在透明背景里，灰色展示。
+   两者作为"一个视觉单元"漂浮在底部，扫一眼就知道在哪一页。 */
+
+.tb {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  height: 132px;
+  background: #FFFFFF;
+  box-shadow: 0 -6px 22px rgba(92, 45, 28, 0.07);
+  padding-bottom: env(safe-area-inset-bottom);
+
+  /* TabBar 从下方滑入 */
+  animation: dawnRiseIn 420ms $ease-out 120ms both;
+}
+
+.tb__item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  transition: transform 180ms $ease-out;
+}
+
+.tb__item--pressed {
+  transform: scale(0.94);
+}
+
+/* 整颗 badge 同时包住图标 + 文字
+   激活时：珊瑚药丸 + 暖影 + 上浮
+   未激活：透明底（视觉无背景），仅文字与图标颜色区分 */
+.tb__badge {
+  min-width: 96px;
+  padding: 8px 16px 10px;
+  border-radius: $r-pill;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  box-shadow: 0 0 0 rgba(255, 92, 56, 0);
+  transform: translateY(0);
+  transition:
+    background-color 320ms $ease-spring,
+    transform 320ms $ease-spring,
+    box-shadow 320ms $ease-spring;
+}
+
+.tb__text {
+  font-size: 20px;
+  line-height: 1;
+  font-weight: 500;
+  white-space: nowrap;
+  color: #B9AAA0;
+  transition: color 260ms $ease-out, font-weight 260ms $ease-out;
+}
+
+/* 激活态：整颗 badge = 珊瑚药丸 + 白图标 + 白粗字 + 暖影 + 上浮 */
+.tb__item--active {
+  .tb__badge {
+    background: $coral;
+    transform: translateY(-4px);
+    box-shadow: $sh-coral;
+  }
+
+  .tb__text {
+    color: #FFFFFF;
+    font-weight: 700;
+  }
+}

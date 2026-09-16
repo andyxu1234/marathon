@@ -1,0 +1,60 @@
+/* 空状态 —— 同心圆「起跑线」造型，不用灰图标敷衍 */
+
+.ep {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 72px 48px 80px;
+  animation: dawnPopIn 520ms $ease-spring both;
+}
+
+.ep__art {
+  position: relative;
+  width: 208px;
+  height: 208px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+
+/* 外圈：虚线圆，呼应跑道分道线 */
+.ep__ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 208px;
+  height: 208px;
+  border-radius: 50%;
+  border: 3px dashed #F7D3C7;
+  background: $coral-mist;
+}
+
+/* 内圈：实心珊瑚软底托住图标 */
+.ep__core {
+  position: relative;
+  z-index: 1;
+  width: 128px;
+  height: 128px;
+  border-radius: 50%;
+  background: $coral-soft;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ep__text {
+  font-size: 28px;
+  font-weight: 600;
+  color: $ink-2;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.ep__hint {
+  margin-top: 10px;
+  font-size: 24px;
+  color: $ink-3;
+  line-height: 1.6;
+  text-align: center;
+}

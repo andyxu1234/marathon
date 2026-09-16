@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>比赛详情</title>
+    <style id="theme-vars">
+/* Marathon Mini-Program Design Tokens */
+/* Brand prefix: brand */
+
+:root {
+  /* Brand Primary - Fresh Teal */
+  --brand: #10B981;
+  --brand-foreground: #FFFFFF;
+  --brand-light: #ECFDF5;
+
+  /* Background & Surface */
+  --brand-background: #F0FDFA;
+  --brand-foreground: #0F172A;
+  --brand-card: #FFFFFF;
+  --brand-card-foreground: #0F172A;
+  --brand-popover: #FFFFFF;
+  --brand-popover-foreground: #0F172A;
+
+  /* Primary */
+  --brand-primary: #10B981;
+  --brand-primary-foreground: #FFFFFF;
+
+  /* Muted / Secondary */
+  --brand-muted: #F1F5F9;
+  --brand-muted-foreground: #64748B;
+
+  /* Border & Input */
+  --brand-border: #E2E8F0;
+  --brand-input: #F1F5F9;
+  --brand-ring: #10B981;
+
+  /* Destructive */
+  --brand-destructive: #EF4444;
+  --brand-destructive-foreground: #FFFFFF;
+
+  /* Ink Scale */
+  --ink: #0F172A;
+  --ink-2: #64748B;
+  --ink-3: #94A3B8;
+
+  /* Surface Scale */
+  --surface: #FFFFFF;
+  --surface-2: #F1F5F9;
+
+  /* Line */
+  --line: #E2E8F0;
+
+  /* State Colors - state indicators */
+  --state-success: #10B981;
+  --state-success-light: #ECFDF5;
+  --state-warning: #F59E0B;
+  --state-warning-light: #FEF3C7;
+  --state-error: #EF4444;
+  --state-error-light: #FEE2E2;
+  --state-info: #0EA5E9;
+  --state-info-light: #E0F2FE;
+
+  /* Radius Scale */
+  --brand-radius-sm: 4px;
+  --brand-radius-md: 8px;
+  --brand-radius-lg: 12px;
+  --brand-radius-xl: 16px;
+  --brand-radius-pill: 999px;
+
+  /* Shadow Scale */
+  --brand-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.03);
+  --brand-shadow-md: 0 2px 8px -2px rgba(0, 0, 0, 0.04);
+  --brand-shadow-lg: 0 8px 24px -6px rgba(0, 0, 0, 0.04);
+
+  /* Hero / On-Primary Colors */
+  --brand-dark: #B91C1C;
+  --brand-on-primary: #FFFFFF;
+  --brand-on-primary-muted: rgba(255, 255, 255, 0.8);
+  --brand-hero-badge-bg: rgba(0, 0, 0, 0.35);
+  --brand-hero-badge-border: rgba(255, 255, 255, 0.6);
+
+  /* Typography */
+  --brand-font-sans: "Inter", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+
+html {
+  font-family: var(--brand-font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--brand-font-sans);
+  color: var(--brand-foreground);
+  background-color: var(--brand-background);
+}
+
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--brand-background);
+    --color-foreground: var(--brand-foreground);
+    --color-card: var(--brand-card);
+    --color-card-foreground: var(--brand-card-foreground);
+    --color-popover: var(--brand-popover);
+    --color-popover-foreground: var(--brand-popover-foreground);
+    --color-primary: var(--brand-primary);
+    --color-primary-foreground: var(--brand-primary-foreground);
+    --color-muted: var(--brand-muted);
+    --color-muted-foreground: var(--brand-muted-foreground);
+    --color-destructive: var(--brand-destructive);
+    --color-destructive-foreground: var(--brand-destructive-foreground);
+    --color-border: var(--brand-border);
+    --color-input: var(--brand-input);
+    --color-ring: var(--brand-ring);
+    --radius-sm: var(--brand-radius-sm);
+    --radius-md: var(--brand-radius-md);
+    --radius-lg: var(--brand-radius-lg);
+    --radius-xl: var(--brand-radius-xl);
+  }
+  @layer base {
+    body { background: var(--brand-background); color: var(--brand-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+    <style id="semantic-token-fallback">
+      .bg-background { background-color: var(--brand-background); }
+      .text-background { color: var(--brand-background); }
+      .border-background { border-color: var(--brand-background); }
+      .ring-background { --tw-ring-color: var(--brand-background); }
+      .bg-foreground { background-color: var(--brand-foreground); }
+      .text-foreground { color: var(--brand-foreground); }
+      .border-foreground { border-color: var(--brand-foreground); }
+      .ring-foreground { --tw-ring-color: var(--brand-foreground); }
+      .bg-card { background-color: var(--brand-card); }
+      .text-card { color: var(--brand-card); }
+      .border-card { border-color: var(--brand-card); }
+      .ring-card { --tw-ring-color: var(--brand-card); }
+      .bg-card-foreground { background-color: var(--brand-card-foreground); }
+      .text-card-foreground { color: var(--brand-card-foreground); }
+      .border-card-foreground { border-color: var(--brand-card-foreground); }
+      .ring-card-foreground { --tw-ring-color: var(--brand-card-foreground); }
+      .bg-popover { background-color: var(--brand-popover); }
+      .text-popover { color: var(--brand-popover); }
+      .border-popover { border-color: var(--brand-popover); }
+      .ring-popover { --tw-ring-color: var(--brand-popover); }
+      .bg-popover-foreground { background-color: var(--brand-popover-foreground); }
+      .text-popover-foreground { color: var(--brand-popover-foreground); }
+      .border-popover-foreground { border-color: var(--brand-popover-foreground); }
+      .ring-popover-foreground { --tw-ring-color: var(--brand-popover-foreground); }
+      .bg-primary { background-color: var(--brand-primary); }
+      .text-primary { color: var(--brand-primary); }
+      .border-primary { border-color: var(--brand-primary); }
+      .ring-primary { --tw-ring-color: var(--brand-primary); }
+      .bg-primary-foreground { background-color: var(--brand-primary-foreground); }
+      .text-primary-foreground { color: var(--brand-primary-foreground); }
+      .border-primary-foreground { border-color: var(--brand-primary-foreground); }
+      .ring-primary-foreground { --tw-ring-color: var(--brand-primary-foreground); }
+      .bg-muted { background-color: var(--brand-muted); }
+      .text-muted { color: var(--brand-muted); }
+      .border-muted { border-color: var(--brand-muted); }
+      .ring-muted { --tw-ring-color: var(--brand-muted); }
+      .bg-muted-foreground { background-color: var(--brand-muted-foreground); }
+      .text-muted-foreground { color: var(--brand-muted-foreground); }
+      .border-muted-foreground { border-color: var(--brand-muted-foreground); }
+      .ring-muted-foreground { --tw-ring-color: var(--brand-muted-foreground); }
+      .bg-destructive { background-color: var(--brand-destructive); }
+      .text-destructive { color: var(--brand-destructive); }
+      .border-destructive { border-color: var(--brand-destructive); }
+      .ring-destructive { --tw-ring-color: var(--brand-destructive); }
+      .bg-destructive-foreground { background-color: var(--brand-destructive-foreground); }
+      .text-destructive-foreground { color: var(--brand-destructive-foreground); }
+      .border-destructive-foreground { border-color: var(--brand-destructive-foreground); }
+      .ring-destructive-foreground { --tw-ring-color: var(--brand-destructive-foreground); }
+      .bg-border { background-color: var(--brand-border); }
+      .text-border { color: var(--brand-border); }
+      .border-border { border-color: var(--brand-border); }
+      .ring-border { --tw-ring-color: var(--brand-border); }
+      .bg-input { background-color: var(--brand-input); }
+      .text-input { color: var(--brand-input); }
+      .border-input { border-color: var(--brand-input); }
+      .ring-input { --tw-ring-color: var(--brand-input); }
+      .bg-ring { background-color: var(--brand-ring); }
+      .text-ring { color: var(--brand-ring); }
+      .border-ring { border-color: var(--brand-ring); }
+      .ring-ring { --tw-ring-color: var(--brand-ring); }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+</head>
+<body class="min-h-screen font-sans antialiased">
+    <main>
+      <style id="critical-layout">
+        .mobile-root {
+          max-width: 420px;
+          margin: 0 auto;
+          min-height: 100vh;
+          background: var(--brand-background);
+          position: relative;
+        }
+        .sticky-top-nav {
+          position: sticky;
+          top: 0;
+          z-index: 50;
+          background: var(--brand-card);
+          border-bottom: 1px solid var(--brand-border);
+          height: 56px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0 16px;
+        }
+        .nav-icon-btn {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 32px;
+          height: 32px;
+          cursor: pointer;
+          color: var(--brand-foreground);
+          border: none;
+          background: transparent;
+        }
+        .hero-section {
+          background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%);
+          height: 180px;
+          border-radius: 0 0 var(--brand-radius-lg) var(--brand-radius-lg);
+          padding: 24px 20px;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+        }
+        .hero-badge-solid {
+          background: var(--brand-hero-badge-bg);
+          color: var(--brand-on-primary);
+          font-size: 11px;
+          font-weight: 600;
+          padding: 3px 10px;
+          border-radius: var(--brand-radius-pill);
+        }
+        .hero-badge-outline {
+          border: 1px solid var(--brand-hero-badge-border);
+          color: var(--brand-on-primary);
+          font-size: 11px;
+          font-weight: 600;
+          padding: 2px 9px;
+          border-radius: var(--brand-radius-pill);
+        }
+        .quick-info-card {
+          background: var(--brand-card);
+          border-radius: var(--brand-radius-lg);
+          padding: 12px;
+          border: 1px solid var(--brand-border);
+          text-align: center;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 4px;
+        }
+        .section-card {
+          background: var(--brand-card);
+          border-radius: var(--brand-radius-lg);
+          border: 1px solid var(--brand-border);
+          padding: 16px;
+        }
+        .info-list-row {
+          display: flex;
+          align-items: flex-start;
+          padding: 12px 0;
+          border-bottom: 1px solid var(--brand-border);
+        }
+        .info-list-row:last-child {
+          border-bottom: none;
+        }
+        .info-label {
+          width: 80px;
+          flex-shrink: 0;
+          font-size: 13px;
+          color: var(--brand-muted-foreground);
+          line-height: 1.5;
+        }
+        .info-value {
+          flex: 1;
+          font-size: 14px;
+          color: var(--brand-foreground);
+          line-height: 1.5;
+        }
+        .notice-item {
+          display: flex;
+          align-items: flex-start;
+          gap: 8px;
+          font-size: 13px;
+          color: var(--brand-muted-foreground);
+          line-height: 1.5;
+        }
+        .sticky-bottom-bar {
+          position: sticky;
+          bottom: 0;
+          z-index: 50;
+          background: var(--brand-card);
+          padding: 12px 16px;
+          border-top: 1px solid var(--brand-border);
+        }
+        .follow-btn {
+          width: 100%;
+          height: 48px;
+          background: var(--brand-primary);
+          color: var(--brand-primary-foreground);
+          border: none;
+          border-radius: var(--brand-radius-lg);
+          font-weight: 600;
+          font-size: 15px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          cursor: pointer;
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .follow-btn:hover {
+          transform: translateY(-1px);
+          box-shadow: var(--brand-shadow-md);
+        }
+      </style>
+      <div class="mobile-root max-w-[420px] mx-auto min-h-screen bg-[var(--brand-background)]">
+        <!-- Section 1: Top Nav Bar -->
+        <nav class="sticky-top-nav">
+          <button class="nav-icon-btn" data-dom-id="back-btn:race-detail.html" aria-label="返回">
+            <i data-lucide="chevron-left" style="width:24px;height:24px;"></i>
+          </button>
+          <span style="font-size:16px;font-weight:600;color:var(--brand-foreground);">赛事详情</span>
+          <button class="nav-icon-btn" aria-label="分享">
+            <i data-lucide="share-2" style="width:20px;height:20px;"></i>
+          </button>
+        </nav>
+
+        <!-- Section 2: Hero Section -->
+        <section class="hero-section">
+          <h1 style="font-size:22px;font-weight:700;color:var(--brand-on-primary);margin:0;">2026 北京马拉松</h1>
+          <p style="font-size:14px;color:var(--brand-on-primary-muted);margin:4px 0 8px 0;">第40届北京马拉松</p>
+          <div style="display:flex;gap:8px;">
+            <span class="hero-badge-solid">报名中</span>
+            <span class="hero-badge-outline">金标赛事</span>
+          </div>
+        </section>
+
+        <!-- Section 3: Quick Info Cards Row -->
+        <section style="padding:16px 16px 0 16px;">
+          <div class="grid grid-cols-3 gap-2">
+            <div class="quick-info-card">
+              <i data-lucide="calendar" style="width:20px;height:20px;color:var(--brand-primary);"></i>
+              <span style="font-size:11px;color:var(--brand-muted-foreground);">比赛日期</span>
+              <span style="font-size:14px;font-weight:600;color:var(--brand-foreground);">10月20日</span>
+            </div>
+            <div class="quick-info-card">
+              <i data-lucide="map-pin" style="width:20px;height:20px;color:var(--brand-primary);"></i>
+              <span style="font-size:11px;color:var(--brand-muted-foreground);">比赛地点</span>
+              <span style="font-size:14px;font-weight:600;color:var(--brand-foreground);">北京</span>
+            </div>
+            <div class="quick-info-card">
+              <i data-lucide="award" style="width:20px;height:20px;color:var(--brand-primary);"></i>
+              <span style="font-size:11px;color:var(--brand-muted-foreground);">赛事等级</span>
+              <span style="font-size:14px;font-weight:600;color:var(--brand-foreground);">金标</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 4: Race Info Section -->
+        <section id="race-info" style="padding:16px;">
+          <h2 style="font-size:16px;font-weight:600;color:var(--brand-foreground);margin:0 0 12px 0;">赛事信息</h2>
+          <div class="section-card">
+            <div class="info-list-row">
+              <span class="info-label">比赛日期</span>
+              <span class="info-value">2026年10月20日 星期日</span>
+            </div>
+            <div class="info-list-row">
+              <span class="info-label">比赛地点</span>
+              <span class="info-value">北京市 天安门广场（起点）</span>
+            </div>
+            <div class="info-list-row">
+              <span class="info-label">赛事等级</span>
+              <span class="info-value">世界田联金标赛事</span>
+            </div>
+            <div class="info-list-row">
+              <span class="info-label">项目设置</span>
+              <span class="info-value">全程马拉松 (42.195km)</span>
+            </div>
+            <div class="info-list-row">
+              <span class="info-label">报名时间</span>
+              <span class="info-value">2026年8月1日 - 9月15日</span>
+            </div>
+            <div class="info-list-row">
+              <span class="info-label">报名费用</span>
+              <span class="info-value">全马 ¥220 / 半马 ¥150</span>
+            </div>
+            <div class="info-list-row">
+              <span class="info-label">主办单位</span>
+              <span class="info-value">中国田径协会</span>
+            </div>
+            <div class="info-list-row">
+              <span class="info-label">联系电话</span>
+              <span class="info-value">010-xxxx-xxxx</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 5: Race Description -->
+        <section style="padding:0 16px 16px 16px;">
+          <h2 style="font-size:16px;font-weight:600;color:var(--brand-foreground);margin:0 0 12px 0;">赛事介绍</h2>
+          <div class="section-card">
+            <p style="font-size:14px;line-height:1.6;color:var(--brand-muted-foreground);margin:0 0 16px 0;">
+              北京马拉松自1981年创办以来，已成为中国最具影响力的马拉松赛事之一。赛道途经天安门广场、奥林匹克公园等标志性建筑，全程42.195公里。本届赛事设全程马拉松项目，预计参赛规模超过30000人。
+            </p>
+            <h3 style="font-size:14px;font-weight:600;color:var(--brand-foreground);margin:0 0 10px 0;">报名须知</h3>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+              <li class="notice-item">
+                <i data-lucide="circle-dot" style="width:16px;height:16px;color:var(--brand-primary);flex-shrink:0;margin-top:2px;"></i>
+                <span><strong style="color:var(--brand-foreground);">年龄要求:</strong> 年满20周岁</span>
+              </li>
+              <li class="notice-item">
+                <i data-lucide="circle-dot" style="width:16px;height:16px;color:var(--brand-primary);flex-shrink:0;margin-top:2px;"></i>
+                <span><strong style="color:var(--brand-foreground);">健康要求:</strong> 需提供近一年体检报告</span>
+              </li>
+              <li class="notice-item">
+                <i data-lucide="circle-dot" style="width:16px;height:16px;color:var(--brand-primary);flex-shrink:0;margin-top:2px;"></i>
+                <span><strong style="color:var(--brand-foreground);">参赛名额:</strong> 30000人 (先到先得)</span>
+              </li>
+              <li class="notice-item">
+                <i data-lucide="circle-dot" style="width:16px;height:16px;color:var(--brand-primary);flex-shrink:0;margin-top:2px;"></i>
+                <span><strong style="color:var(--brand-foreground);">报名时间:</strong> 8月1日10:00开启</span>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Section 6: Follow Button -->
+        <div class="sticky-bottom-bar">
+          <button id="follow-btn" class="follow-btn" data-dom-id="follow-btn:race-detail.html">
+            <i data-lucide="heart" style="width:18px;height:18px;"></i>
+            <span>关注赛事</span>
+          </button>
+        </div>
+      </div>
+    </main>
+    <script>lucide.createIcons();</script>
+</body>
+</html>

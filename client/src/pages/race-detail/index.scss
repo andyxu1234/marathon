@@ -1,0 +1,389 @@
+/* 比赛详情页 —— 晨曦跑道 (Dawn Track)
+   Hero 铺满珊瑚渐变，三张信息卡上移压在 Hero 底部形成层次 */
+
+.page-race-detail {
+  min-height: 100vh;
+  background: $paper;
+  padding-bottom: 200px;
+}
+
+/* ============================================================
+   顶部导航
+   ============================================================ */
+
+.nav-bar {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 88px;
+  padding: 0 20px;
+  background: #FFFFFF;
+}
+
+.nav-icon-btn {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.nav-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 32px;
+  font-weight: 600;
+  color: $ink;
+  text-align: center;
+}
+
+.nav-spacer {
+  width: 64px;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   Hero
+   ============================================================ */
+
+.hero-section {
+  position: relative;
+  overflow: hidden;
+  padding: 36px 32px 88px;
+  background: linear-gradient(158deg, #FF8156 0%, #FF5C38 44%, #E63C1B 100%);
+  border-radius: 0 0 $r-2xl $r-2xl;
+  animation: dawnFadeIn 420ms $ease-out both;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: -20%;
+    right: -50px;
+    width: 200px;
+    height: 140%;
+    transform: skewX(-18deg);
+    background: repeating-linear-gradient(
+      -45deg,
+      rgba(255, 255, 255, 0.12) 0 8px,
+      rgba(255, 255, 255, 0) 8px 24px
+    );
+    pointer-events: none;
+  }
+}
+
+.hero-title {
+  position: relative;
+  z-index: 1;
+  display: block;
+  font-size: 42px;
+  font-weight: 700;
+  line-height: 1.32;
+  color: #FFFFFF;
+  letter-spacing: -0.01em;
+}
+
+.hero-badges {
+  position: relative;
+  z-index: 1;
+  margin-top: 22px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 20px;
+  border-radius: $r-pill;
+  font-size: 23px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* 主状态：实心亮底，一眼看到当前状态 */
+.hero-badge--solid {
+  background: #FFFFFF;
+  color: $coral-deep;
+}
+
+/* 次要标签：半透明白描边 */
+.hero-badge--outline {
+  background: rgba(255, 255, 255, 0.2);
+  color: #FFFFFF;
+}
+
+.badge-outline {
+  background: rgba(255, 255, 255, 0.2);
+  color: #FFFFFF;
+}
+
+/* ============================================================
+   快速信息三卡 —— 负 margin 压在 Hero 底部
+   ============================================================ */
+
+.quick-info-row {
+  position: relative;
+  z-index: 5;
+  margin: -56px 28px 0;
+  display: flex;
+  gap: 12px;
+  animation: dawnEnterUp 520ms $ease-out 100ms both;
+}
+
+.quick-info-card {
+  flex: 1;
+  min-width: 0;
+  padding: 24px 16px;
+  border-radius: $r-md;
+  background: #FFFFFF;
+  box-shadow: $sh-2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.quick-info-label {
+  font-size: 22px;
+  color: $ink-3;
+  text-align: center;
+}
+
+.quick-info-value {
+  font-size: 26px;
+  font-weight: 600;
+  color: $ink;
+  text-align: center;
+  line-height: 1.35;
+}
+
+/* ============================================================
+   信息区块
+   ============================================================ */
+
+.info-section {
+  margin-top: 32px;
+  padding: 0 28px;
+  animation: dawnEnterUp 500ms $ease-out 180ms both;
+}
+
+.section-title {
+  display: block;
+  margin-bottom: 14px;
+  font-size: 30px;
+  font-weight: 700;
+  color: $ink;
+  letter-spacing: -0.01em;
+}
+
+.info-card {
+  background: #FFFFFF;
+  border-radius: $r-lg;
+  box-shadow: $sh-1;
+  padding: 8px 28px;
+  overflow: hidden;
+}
+
+.info-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 24px 0;
+  border-bottom: 1px solid $line-soft;
+}
+
+.info-row--last {
+  border-bottom: none;
+}
+
+.info-label {
+  flex-shrink: 0;
+  width: 168px;
+  font-size: 26px;
+  color: $ink-3;
+  line-height: 1.5;
+}
+
+.info-value {
+  flex: 1;
+  min-width: 0;
+  font-size: 26px;
+  color: $ink;
+  line-height: 1.55;
+  text-align: right;
+}
+
+.items-value {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+}
+
+.item-fee {
+  font-family: $font-num;
+  font-size: 30px;
+  font-weight: 700;
+  color: $coral;
+  letter-spacing: -0.01em;
+}
+
+.item-scale {
+  font-size: 24px;
+  color: $ink-3;
+}
+
+/* ===== 介绍 / 须知 ===== */
+
+.intro-text {
+  display: block;
+  padding: 24px 0;
+  font-size: 26px;
+  color: $ink-2;
+  line-height: 1.75;
+}
+
+.guide-title {
+  display: block;
+  padding-top: 8px;
+  font-size: 26px;
+  font-weight: 600;
+  color: $ink;
+}
+
+.notice-list {
+  padding: 12px 0 24px;
+}
+
+.notice-item {
+  position: relative;
+  padding: 8px 0 8px 22px;
+
+  /* 用 CSS 圆点替代每行一个 <Icon>，减少大量节点渲染开销，长须知也不卡 */
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 16px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: $coral;
+  }
+}
+
+.notice-text {
+  flex: 1;
+  min-width: 0;
+  font-size: 25px;
+  color: $ink-2;
+  line-height: 1.7;
+}
+
+/* ============================================================
+   底部关注栏
+   ============================================================ */
+
+.sticky-bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 90;
+  padding: 16px 28px calc(16px + env(safe-area-inset-bottom));
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 -6px 22px rgba(92, 45, 28, 0.08);
+  animation: dawnRiseIn 420ms $ease-out both;
+}
+
+.follow-btn {
+  height: 96px;
+  border-radius: $r-pill;
+  background: linear-gradient(135deg, #FF7F57 0%, #FF5C38 100%);
+  box-shadow: $sh-coral;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 30px;
+  font-weight: 600;
+  color: #FFFFFF;
+  transition: transform 180ms $ease-out;
+}
+
+.follow-btn--active {
+  background: $coral-soft;
+  box-shadow: none;
+  color: $coral-deep;
+}
+
+.follow-btn--loading {
+  opacity: 0.7;
+}
+
+/* ============================================================
+   骨架屏（加载态占位）—— 珊瑚呼吸光，消除"白屏→突然全量渲染"的跳跃感
+   ============================================================ */
+
+.sk {
+  padding: 32px 28px 80px;
+  animation: skPulse 1.4s $ease-out infinite;
+}
+
+.sk-hero {
+  height: 180px;
+  border-radius: $r-xl;
+  background: linear-gradient(135deg, #FFB59C 0%, #FF8F72 100%);
+  opacity: 0.55;
+}
+
+.sk-quick {
+  display: flex;
+  gap: 12px;
+  margin-top: -40px;
+  padding: 0 8px;
+  position: relative;
+  z-index: 2;
+}
+
+.sk-pill {
+  flex: 1;
+  height: 120px;
+  border-radius: $r-md;
+  background: #FFFFFF;
+  box-shadow: $sh-1;
+}
+
+.sk-section {
+  margin-top: 28px;
+  padding: 28px;
+  border-radius: $r-lg;
+  background: #FFFFFF;
+  box-shadow: $sh-1;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.sk-line {
+  height: 26px;
+  border-radius: 8px;
+  background: $sand;
+}
+
+.sk-w40 { width: 40%; }
+.sk-w50 { width: 50%; }
+.sk-w60 { width: 60%; }
+.sk-w70 { width: 70%; }
+.sk-w85 { width: 85%; }
+
+@keyframes skPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.62; }
+}

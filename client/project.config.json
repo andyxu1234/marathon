@@ -1,0 +1,17 @@
+{
+  "miniprogramRoot": "./dist",
+  "projectname": "marathon-mini-program",
+  "description": "马拉松赛事追踪小程序",
+  "appid": "wx21a3d7f98708c369",
+  "setting": {
+    "urlCheck": false,
+    "es6": false,
+    "enhance": false,
+    "compileHotReLoad": false,
+    "postcss": false,
+    "minified": false
+  },
+  "compileType": "miniprogram",
+  "simulatorPluginLibVersion": {},
+  "condition": {}
+}

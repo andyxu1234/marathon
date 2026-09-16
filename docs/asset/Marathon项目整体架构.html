@@ -1,0 +1,125 @@
+<svg viewBox="0 0 680 629" width="100%" role="img" xmlns="http://www.w3.org/2000/svg">
+<title>Marathon 项目架构</title>
+<desc>三个外部数据源经 Pipeline 六步处理后，分流为自动入库与人工审核两路，汇入 mi_event 正式表，由 FastAPI 提供服务给 Taro 客户端三个页面。</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+</defs>
+
+<g>
+<rect x="40" y="50" width="180" height="44" rx="8" fill="#FAEEDA" stroke="#854F0B" stroke-width="0.5"/>
+<text x="130" y="66" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="14" font-weight="500" fill="#633806">最酷 zuicool</text>
+<text x="130" y="82" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="12" fill="#854F0B">权重 80 · 每 2 小时</text>
+</g>
+<g>
+<rect x="250" y="50" width="180" height="44" rx="8" fill="#FAEEDA" stroke="#854F0B" stroke-width="0.5"/>
+<text x="340" y="66" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="14" font-weight="500" fill="#633806">跑步中国</text>
+<text x="340" y="82" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="12" fill="#854F0B">权重 100 · 每 2 天</text>
+</g>
+<g>
+<rect x="460" y="50" width="180" height="44" rx="8" fill="#FAEEDA" stroke="#854F0B" stroke-width="0.5"/>
+<text x="550" y="66" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="14" font-weight="500" fill="#633806">网络搜索补漏</text>
+<text x="550" y="82" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="12" fill="#854F0B">权重 45 · 每天 1 次</text>
+</g>
+
+<path d="M130 94 L130 110" fill="none" stroke="#888780" stroke-width="0.5"/>
+<path d="M340 94 L340 110" fill="none" stroke="#888780" stroke-width="0.5"/>
+<path d="M550 94 L550 110" fill="none" stroke="#888780" stroke-width="0.5"/>
+<path d="M130 110 L550 110" fill="none" stroke="#888780" stroke-width="0.5"/>
+<path d="M340 110 L340 124" fill="none" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<rect x="40" y="124" width="600" height="165" rx="20" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+<text x="60" y="146" dominant-baseline="central" font-family="var(--font-sans)" font-size="14" font-weight="500" fill="#0C447C">Pipeline 采集管道 · 插件式适配器</text>
+
+<g>
+<rect x="60" y="166" width="170" height="44" rx="8" fill="var(--color-background-primary)" stroke="#185FA5" stroke-width="0.5"/>
+<text x="145" y="182" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="14" font-weight="500" fill="#0C447C">采集</text>
+<text x="145" y="198" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="12" fill="#185FA5">httpx + 重试</text>
+</g>
+<g>
+<rect x="255" y="166" width="170" height="44" rx="8" fill="var(--color-background-primary)" stroke="#185FA5" stroke-width="0.5"/>
+<text x="340" y="182" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="14" font-weight="500" fill="#0C447C">解析</text>
+<text x="340" y="198" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="12" fill="#185FA5">规则为主 · AI 兜底</text>
+</g>
+<g>
+<rect x="450" y="166" width="170" height="44" rx="8" fill="var(--color-background-primary)" stroke="#185FA5" stroke-width="0.5"/>
+<text x="535" y="182" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="14" font-weight="500" fill="#0C447C">留痕</text>
+<text x="535" y="198" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="12" fill="#185FA5">mi_event_source</text>
+</g>
+<g>
+<rect x="60" y="228" width="170" height="44" rx="8" fill="var(--color-background-primary)" stroke="#185FA5" stroke-width="0.5"/>
+<text x="145" y="244" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="14" font-weight="500" fill="#0C447C">清洗归一化</text>
+<text x="145" y="260" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="12" fill="#185FA5">日期 · 城市 · 枚举</text>
+</g>
+<g>
+<rect x="255" y="228" width="170" height="44" rx="8" fill="var(--color-background-primary)" stroke="#185FA5" stroke-width="0.5"/>
+<text x="340" y="244" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="14" font-weight="500" fill="#0C447C">去重合并</text>
+<text x="340" y="260" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="12" fill="#185FA5">加权投票判真值</text>
+</g>
+<g>
+<rect x="450" y="228" width="170" height="44" rx="8" fill="var(--color-background-primary)" stroke="#185FA5" stroke-width="0.5"/>
+<text x="535" y="244" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="14" font-weight="500" fill="#0C447C">分流入库</text>
+<text x="535" y="260" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="12" fill="#185FA5">按置信度判定</text>
+</g>
+
+<path d="M235 188 L255 188" fill="none" stroke="#185FA5" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M425 188 L450 188" fill="none" stroke="#185FA5" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M620 188 L630 188 L630 214 L60 214 L60 228" fill="none" stroke="#185FA5" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M230 250 L255 250" fill="none" stroke="#185FA5" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M425 250 L450 250" fill="none" stroke="#185FA5" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<path d="M340 289 L340 319" fill="none" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<g>
+<rect x="40" y="319" width="280" height="56" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+<text x="180" y="337" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="14" font-weight="500" fill="#0C447C">自动入库</text>
+<text x="180" y="357" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="12" fill="#185FA5">置信度 ≥ 75 直接写入</text>
+</g>
+<g>
+<rect x="360" y="319" width="280" height="56" rx="8" fill="#FAEEDA" stroke="#854F0B" stroke-width="0.5"/>
+<text x="500" y="337" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="14" font-weight="500" fill="#633806">人工审核队列</text>
+<text x="500" y="357" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="12" fill="#854F0B">含冲突详情 · 可编辑覆盖</text>
+</g>
+
+<path d="M180 375 L180 392" fill="none" stroke="#5F5E5A" stroke-width="0.5"/>
+<path d="M500 375 L500 392" fill="none" stroke="#5F5E5A" stroke-width="0.5"/>
+<path d="M180 392 L500 392" fill="none" stroke="#5F5E5A" stroke-width="0.5"/>
+<path d="M340 392 L340 405" fill="none" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<g>
+<rect x="40" y="405" width="600" height="44" rx="8" fill="var(--color-background-secondary)" stroke="var(--color-border-tertiary)" stroke-width="0.5"/>
+<text x="340" y="421" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="14" font-weight="500" fill="var(--color-text-primary)">MySQL 8 · mi_event / mi_user / mi_favorite / mi_registration</text>
+<text x="340" y="437" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="12" fill="var(--color-text-secondary)">阿里云远程库 · 异步 aiomysql · Alembic 版本化迁移</text>
+</g>
+
+<path d="M340 449 L340 479" fill="none" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<g>
+<rect x="40" y="479" width="600" height="56" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+<text x="340" y="497" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="14" font-weight="500" fill="#0C447C">FastAPI · SQLAlchemy 2 async</text>
+<text x="340" y="517" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="12" fill="#185FA5">events / favorites / registrations / users / pipeline · JWT 鉴权</text>
+</g>
+
+<path d="M340 535 L340 550" fill="none" stroke="#5F5E5A" stroke-width="0.5"/>
+<path d="M130 550 L550 550" fill="none" stroke="#5F5E5A" stroke-width="0.5"/>
+<path d="M130 550 L130 565" fill="none" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M340 550 L340 565" fill="none" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M550 550 L550 565" fill="none" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<g>
+<rect x="40" y="565" width="180" height="44" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+<text x="130" y="581" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="14" font-weight="500" fill="#0C447C">首页</text>
+<text x="130" y="597" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="12" fill="#185FA5">搜索 · 五维筛选</text>
+</g>
+<g>
+<rect x="250" y="565" width="180" height="44" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+<text x="340" y="581" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="14" font-weight="500" fill="#0C447C">关注</text>
+<text x="340" y="597" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="12" fill="#185FA5">三维状态 · 倒计时</text>
+</g>
+<g>
+<rect x="460" y="565" width="180" height="44" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+<text x="550" y="581" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="14" font-weight="500" fill="#0C447C">我的</text>
+<text x="550" y="597" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="12" fill="#185FA5">战绩 · 头像昵称</text>
+</g>
+</svg>

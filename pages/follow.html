@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关注</title>
+    <style id="theme-vars">
+/* Marathon Mini-Program Design Tokens */
+/* Brand prefix: brand */
+
+:root {
+  /* Brand Primary - Fresh Teal */
+  --brand: #10B981;
+  --brand-foreground: #FFFFFF;
+  --brand-light: #ECFDF5;
+
+  /* Background & Surface */
+  --brand-background: #F0FDFA;
+  --brand-foreground: #0F172A;
+  --brand-card: #FFFFFF;
+  --brand-card-foreground: #0F172A;
+  --brand-popover: #FFFFFF;
+  --brand-popover-foreground: #0F172A;
+
+  /* Primary */
+  --brand-primary: #10B981;
+  --brand-primary-foreground: #FFFFFF;
+
+  /* Muted / Secondary */
+  --brand-muted: #F1F5F9;
+  --brand-muted-foreground: #64748B;
+
+  /* Border & Input */
+  --brand-border: #E2E8F0;
+  --brand-input: #F1F5F9;
+  --brand-ring: #10B981;
+
+  /* Destructive */
+  --brand-destructive: #EF4444;
+  --brand-destructive-foreground: #FFFFFF;
+
+  /* Ink Scale */
+  --ink: #0F172A;
+  --ink-2: #64748B;
+  --ink-3: #94A3B8;
+
+  /* Surface Scale */
+  --surface: #FFFFFF;
+  --surface-2: #F1F5F9;
+
+  /* Line */
+  --line: #E2E8F0;
+
+  /* State Colors - state indicators */
+  --state-success: #10B981;
+  --state-success-light: #ECFDF5;
+  --state-warning: #F59E0B;
+  --state-warning-light: #FEF3C7;
+  --state-error: #EF4444;
+  --state-error-light: #FEE2E2;
+  --state-info: #0EA5E9;
+  --state-info-light: #E0F2FE;
+
+  /* Radius Scale */
+  --brand-radius-sm: 4px;
+  --brand-radius-md: 8px;
+  --brand-radius-lg: 12px;
+  --brand-radius-xl: 16px;
+  --brand-radius-pill: 999px;
+
+  /* Shadow Scale */
+  --brand-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.03);
+  --brand-shadow-md: 0 2px 8px -2px rgba(0, 0, 0, 0.04);
+  --brand-shadow-lg: 0 8px 24px -6px rgba(0, 0, 0, 0.04);
+
+  /* Typography */
+  --brand-font-sans: "Inter", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+
+html {
+  font-family: var(--brand-font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--brand-font-sans);
+  color: var(--brand-foreground);
+  background-color: var(--brand-background);
+}
+
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--brand-background);
+    --color-foreground: var(--brand-foreground);
+    --color-card: var(--brand-card);
+    --color-card-foreground: var(--brand-card-foreground);
+    --color-popover: var(--brand-popover);
+    --color-popover-foreground: var(--brand-popover-foreground);
+    --color-primary: var(--brand-primary);
+    --color-primary-foreground: var(--brand-primary-foreground);
+    --color-muted: var(--brand-muted);
+    --color-muted-foreground: var(--brand-muted-foreground);
+    --color-destructive: var(--brand-destructive);
+    --color-destructive-foreground: var(--brand-destructive-foreground);
+    --color-border: var(--brand-border);
+    --color-input: var(--brand-input);
+    --color-ring: var(--brand-ring);
+    --radius-sm: var(--brand-radius-sm);
+    --radius-md: var(--brand-radius-md);
+    --radius-lg: var(--brand-radius-lg);
+    --radius-xl: var(--brand-radius-xl);
+  }
+  @layer base {
+    body { background: var(--brand-background); color: var(--brand-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+    <style id="semantic-token-fallback">
+      .bg-background { background-color: var(--brand-background); }
+      .text-background { color: var(--brand-background); }
+      .border-background { border-color: var(--brand-background); }
+      .ring-background { --tw-ring-color: var(--brand-background); }
+      .bg-foreground { background-color: var(--brand-foreground); }
+      .text-foreground { color: var(--brand-foreground); }
+      .border-foreground { border-color: var(--brand-foreground); }
+      .ring-foreground { --tw-ring-color: var(--brand-foreground); }
+      .bg-card { background-color: var(--brand-card); }
+      .text-card { color: var(--brand-card); }
+      .border-card { border-color: var(--brand-card); }
+      .ring-card { --tw-ring-color: var(--brand-card); }
+      .bg-card-foreground { background-color: var(--brand-card-foreground); }
+      .text-card-foreground { color: var(--brand-card-foreground); }
+      .border-card-foreground { border-color: var(--brand-card-foreground); }
+      .ring-card-foreground { --tw-ring-color: var(--brand-card-foreground); }
+      .bg-popover { background-color: var(--brand-popover); }
+      .text-popover { color: var(--brand-popover); }
+      .border-popover { border-color: var(--brand-popover); }
+      .ring-popover { --tw-ring-color: var(--brand-popover); }
+      .bg-popover-foreground { background-color: var(--brand-popover-foreground); }
+      .text-popover-foreground { color: var(--brand-popover-foreground); }
+      .border-popover-foreground { border-color: var(--brand-popover-foreground); }
+      .ring-popover-foreground { --tw-ring-color: var(--brand-popover-foreground); }
+      .bg-primary { background-color: var(--brand-primary); }
+      .text-primary { color: var(--brand-primary); }
+      .border-primary { border-color: var(--brand-primary); }
+      .ring-primary { --tw-ring-color: var(--brand-primary); }
+      .bg-primary-foreground { background-color: var(--brand-primary-foreground); }
+      .text-primary-foreground { color: var(--brand-primary-foreground); }
+      .border-primary-foreground { border-color: var(--brand-primary-foreground); }
+      .ring-primary-foreground { --tw-ring-color: var(--brand-primary-foreground); }
+      .bg-muted { background-color: var(--brand-muted); }
+      .text-muted { color: var(--brand-muted); }
+      .border-muted { border-color: var(--brand-muted); }
+      .ring-muted { --tw-ring-color: var(--brand-muted); }
+      .bg-muted-foreground { background-color: var(--brand-muted-foreground); }
+      .text-muted-foreground { color: var(--brand-muted-foreground); }
+      .border-muted-foreground { border-color: var(--brand-muted-foreground); }
+      .ring-muted-foreground { --tw-ring-color: var(--brand-muted-foreground); }
+      .bg-destructive { background-color: var(--brand-destructive); }
+      .text-destructive { color: var(--brand-destructive); }
+      .border-destructive { border-color: var(--brand-destructive); }
+      .ring-destructive { --tw-ring-color: var(--brand-destructive); }
+      .bg-destructive-foreground { background-color: var(--brand-destructive-foreground); }
+      .text-destructive-foreground { color: var(--brand-destructive-foreground); }
+      .border-destructive-foreground { border-color: var(--brand-destructive-foreground); }
+      .ring-destructive-foreground { --tw-ring-color: var(--brand-destructive-foreground); }
+      .bg-border { background-color: var(--brand-border); }
+      .text-border { color: var(--brand-border); }
+      .border-border { border-color: var(--brand-border); }
+      .ring-border { --tw-ring-color: var(--brand-border); }
+      .bg-input { background-color: var(--brand-input); }
+      .text-input { color: var(--brand-input); }
+      .border-input { border-color: var(--brand-input); }
+      .ring-input { --tw-ring-color: var(--brand-input); }
+      .bg-ring { background-color: var(--brand-ring); }
+      .text-ring { color: var(--brand-ring); }
+      .border-ring { border-color: var(--brand-ring); }
+      .ring-ring { --tw-ring-color: var(--brand-ring); }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+</head>
+<body class="min-h-screen font-sans antialiased">
+    <main>
+        <style id="critical-layout">
+          #app-frame {
+            padding-bottom: 64px;
+          }
+          .follow-card-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+          }
+          .status-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--brand-border);
+          }
+          .status-row:last-child {
+            border-bottom: none;
+          }
+          .status-label {
+            flex-shrink: 0;
+            width: 48px;
+            font-size: 12px;
+            color: var(--brand-muted-foreground);
+          }
+          .status-options {
+            display: flex;
+            gap: 6px;
+            flex: 1;
+            flex-wrap: wrap;
+          }
+          .status-opt {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            line-height: 1.4;
+            white-space: nowrap;
+            cursor: pointer;
+            border: 1px solid var(--brand-border);
+            background: var(--brand-card);
+            color: var(--brand-muted-foreground);
+          }
+          .status-opt.active {
+            font-weight: 600;
+          }
+          .status-opt.active.success {
+            background: var(--state-success-light);
+            color: var(--state-success);
+            border-color: transparent;
+          }
+          .status-opt.active.warning {
+            background: var(--state-warning-light);
+            color: var(--state-warning);
+            border-color: transparent;
+          }
+          .status-opt.active.info {
+            background: var(--state-info-light);
+            color: var(--state-info);
+            border-color: transparent;
+          }
+          .status-opt.active.muted {
+            background: var(--brand-muted);
+            color: var(--brand-muted-foreground);
+            border-color: transparent;
+          }
+          .race-type-tag {
+            display: inline-block;
+            padding: 1px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+            background: var(--brand-light);
+            color: var(--brand-primary);
+          }
+          .fee-input {
+            width: 80px;
+            height: 28px;
+            border: 1px solid var(--brand-border);
+            border-radius: 6px;
+            font-size: 13px;
+            text-align: right;
+            padding: 0 6px;
+            background: var(--brand-card);
+            color: var(--brand-foreground);
+          }
+          .add-race-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            height: 44px;
+            border: 2px dashed var(--brand-border);
+            border-radius: var(--brand-radius-lg);
+            background: var(--brand-card);
+            color: var(--brand-primary);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: border-color 0.2s;
+          }
+          [data-mobile-nav="global"] {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 420px;
+            z-index: 50;
+          }
+          html, body { overflow-x: hidden; }
+          .filter-tab-bar {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            padding: 0 16px;
+            height: 40px;
+            background: var(--brand-card);
+            border-bottom: 1px solid var(--brand-border);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+          }
+          .filter-tab-bar::-webkit-scrollbar { display: none; }
+          .filter-tab {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            height: 40px;
+            padding: 0 12px;
+            background: none;
+            border: none;
+            font-size: 13px;
+            color: var(--brand-muted-foreground);
+            cursor: pointer;
+            white-space: nowrap;
+          }
+          .filter-tab.active {
+            color: var(--brand-primary);
+            font-weight: 600;
+          }
+          .filter-tab .tab-arrow {
+            width: 12px;
+            height: 12px;
+            transition: transform 0.2s ease;
+          }
+          .filter-tab.active .tab-arrow {
+            transform: rotate(180deg);
+          }
+        </style>
+        <div id="app-frame" class="max-w-[420px] mx-auto min-h-screen bg-[var(--brand-background)]">
+            <!-- Section 1: Top Header -->
+            <header class="bg-[var(--brand-card)] px-4 py-4 border-b border-[var(--brand-border)]">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-[20px] font-bold text-[var(--brand-foreground)] leading-tight">我的赛事</h1>
+                        <p class="text-[13px] text-[var(--brand-muted-foreground)] mt-1">追踪你的每场比赛</p>
+                    </div>
+                    <button data-dom-id="add-race-entry:follow.html" class="flex items-center gap-1.5 px-3 h-9 rounded-lg" style="background:var(--brand-primary);color:var(--brand-primary-foreground);font-size:13px;font-weight:600;border:none;cursor:pointer;">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                        <span>添加赛事</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Section 2: Summary Stats Bar -->
+            <section class="px-4 pt-4">
+                <div class="bg-[var(--brand-card)] rounded-lg border border-[var(--brand-border)] grid grid-cols-3 py-4">
+                    <div class="flex flex-col items-center justify-center gap-1 border-r border-[var(--brand-border)]">
+                        <span class="text-[20px] font-bold text-[var(--brand-primary)] leading-none">5</span>
+                        <span class="text-[11px] text-[var(--brand-muted-foreground)]">关注</span>
+                    </div>
+                    <div class="flex flex-col items-center justify-center gap-1 border-r border-[var(--brand-border)]">
+                        <span class="text-[20px] font-bold leading-none" style="color:var(--state-success)">3</span>
+                        <span class="text-[11px] text-[var(--brand-muted-foreground)]">已报名</span>
+                    </div>
+                    <div class="flex flex-col items-center justify-center gap-1">
+                        <span class="text-[20px] font-bold leading-none" style="color:var(--state-warning)">1</span>
+                        <span class="text-[11px] text-[var(--brand-muted-foreground)]">待抽签</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Filter Tab Bar -->
+            <div class="filter-tab-bar no-scrollbar">
+              <button class="filter-tab active" data-filter-tab="reg">
+                <span>报名状态</span>
+                <i data-lucide="chevron-down" class="tab-arrow"></i>
+              </button>
+              <button class="filter-tab" data-filter-tab="pay">
+                <span>缴费状态</span>
+                <i data-lucide="chevron-down" class="tab-arrow"></i>
+              </button>
+              <button class="filter-tab" data-filter-tab="lottery">
+                <span>中签状态</span>
+                <i data-lucide="chevron-down" class="tab-arrow"></i>
+              </button>
+            </div>
+
+            <!-- Section 3: Follow List -->
+            <section class="px-4 mt-4">
+                <h2 class="text-[16px] font-semibold text-[var(--brand-foreground)] mb-3">赛事追踪</h2>
+                <div id="follow-list" class="follow-card-list">
+
+                    <!-- Card 1: 北京马拉松 -->
+                    <article class="bg-[var(--brand-card)] rounded-lg border border-[var(--brand-border)] p-4">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-center gap-2">
+                                <h3 class="text-[15px] font-semibold text-[var(--brand-foreground)]">北京马拉松</h3>
+                                <span class="race-type-tag">全马</span>
+                            </div>
+                            <span class="text-[13px] text-[var(--brand-muted-foreground)]">10月20日</span>
+                        </div>
+                        <div class="mt-3">
+                            <div class="status-row">
+                                <span class="status-label">报名</span>
+                                <div class="status-options">
+                                    <span class="status-opt active success"><i data-lucide="check-circle" class="w-3.5 h-3.5 shrink-0"></i>已报名</span>
+                                    <span class="status-opt">未报名</span>
+                                </div>
+                            </div>
+                            <div class="status-row">
+                                <span class="status-label">缴费</span>
+                                <div class="status-options">
+                                    <span class="status-opt active success"><i data-lucide="check-circle" class="w-3.5 h-3.5 shrink-0"></i>已缴费</span>
+                                    <span class="status-opt">未缴费</span>
+                                </div>
+                            </div>
+                            <div class="status-row">
+                                <span class="status-label">中签</span>
+                                <div class="status-options">
+                                    <span class="status-opt active warning"><i data-lucide="clock" class="w-3.5 h-3.5 shrink-0"></i>抽签中</span>
+                                    <span class="status-opt">已中签</span>
+                                    <span class="status-opt">未中签</span>
+                                </div>
+                            </div>
+                            <div class="status-row">
+                                <span class="status-label">费用</span>
+                                <div class="flex items-center gap-1">
+                                    <span class="text-[13px] text-[var(--brand-muted-foreground)]">¥</span>
+                                    <input type="text" class="fee-input" value="220" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1.5 mt-3 text-[var(--brand-muted-foreground)]">
+                            <i data-lucide="calendar-days" class="w-3.5 h-3.5 shrink-0"></i>
+                            <span class="text-[12px]">距比赛还有 54 天</span>
+                        </div>
+                    </article>
+
+                    <!-- Card 2: 上海马拉松 -->
+                    <article class="bg-[var(--brand-card)] rounded-lg border border-[var(--brand-border)] p-4">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-center gap-2">
+                                <h3 class="text-[15px] font-semibold text-[var(--brand-foreground)]">上海马拉松</h3>
+                                <span class="race-type-tag">全马</span>
+                            </div>
+                            <span class="text-[13px] text-[var(--brand-muted-foreground)]">11月17日</span>
+                        </div>
+                        <div class="mt-3">
+                            <div class="status-row">
+                                <span class="status-label">报名</span>
+                                <div class="status-options">
+                                    <span class="status-opt active success"><i data-lucide="check-circle" class="w-3.5 h-3.5 shrink-0"></i>已报名</span>
+                                    <span class="status-opt">未报名</span>
+                                </div>
+                            </div>
+                            <div class="status-row">
+                                <span class="status-label">缴费</span>
+                                <div class="status-options">
+                                    <span class="status-opt active warning"><i data-lucide="alert-circle" class="w-3.5 h-3.5 shrink-0"></i>未缴费</span>
+                                    <span class="status-opt">已缴费</span>
+                                </div>
+                            </div>
+                            <div class="status-row">
+                                <span class="status-label">中签</span>
+                                <div class="status-options">
+                                    <span class="status-opt active warning"><i data-lucide="clock" class="w-3.5 h-3.5 shrink-0"></i>抽签中</span>
+                                    <span class="status-opt">已中签</span>
+                                    <span class="status-opt">未中签</span>
+                                </div>
+                            </div>
+                            <div class="status-row">
+                                <span class="status-label">费用</span>
+                                <div class="flex items-center gap-1">
+                                    <span class="text-[13px] text-[var(--brand-muted-foreground)]">¥</span>
+                                    <input type="text" class="fee-input" value="250" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1.5 mt-3 text-[var(--brand-muted-foreground)]">
+                            <i data-lucide="calendar-days" class="w-3.5 h-3.5 shrink-0"></i>
+                            <span class="text-[12px]">距比赛还有 82 天</span>
+                        </div>
+                    </article>
+
+                    <!-- Card 3: 成都马拉松 -->
+                    <article class="bg-[var(--brand-card)] rounded-lg border border-[var(--brand-border)] p-4">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-center gap-2">
+                                <h3 class="text-[15px] font-semibold text-[var(--brand-foreground)]">成都马拉松</h3>
+                                <span class="race-type-tag">半马</span>
+                            </div>
+                            <span class="text-[13px] text-[var(--brand-muted-foreground)]">10月27日</span>
+                        </div>
+                        <div class="mt-3">
+                            <div class="status-row">
+                                <span class="status-label">报名</span>
+                                <div class="status-options">
+                                    <span class="status-opt active success"><i data-lucide="check-circle" class="w-3.5 h-3.5 shrink-0"></i>已报名</span>
+                                    <span class="status-opt">未报名</span>
+                                </div>
+                            </div>
+                            <div class="status-row">
+                                <span class="status-label">缴费</span>
+                                <div class="status-options">
+                                    <span class="status-opt active success"><i data-lucide="check-circle" class="w-3.5 h-3.5 shrink-0"></i>已缴费</span>
+                                    <span class="status-opt">未缴费</span>
+                                </div>
+                            </div>
+                            <div class="status-row">
+                                <span class="status-label">中签</span>
+                                <div class="status-options">
+                                    <span class="status-opt active success"><i data-lucide="check-circle" class="w-3.5 h-3.5 shrink-0"></i>已中签</span>
+                                    <span class="status-opt">未中签</span>
+                                    <span class="status-opt">抽签中</span>
+                                </div>
+                            </div>
+                            <div class="status-row">
+                                <span class="status-label">费用</span>
+                                <div class="flex items-center gap-1">
+                                    <span class="text-[13px] text-[var(--brand-muted-foreground)]">¥</span>
+                                    <input type="text" class="fee-input" value="200" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1.5 mt-3 text-[var(--brand-muted-foreground)]">
+                            <i data-lucide="calendar-days" class="w-3.5 h-3.5 shrink-0"></i>
+                            <span class="text-[12px]">距比赛还有 61 天</span>
+                        </div>
+                    </article>
+
+                    <!-- Card 4: 南京马拉松 (用户自定义添加的赛事) -->
+                    <article class="bg-[var(--brand-card)] rounded-lg border border-[var(--brand-border)] p-4">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-center gap-2">
+                                <h3 class="text-[15px] font-semibold text-[var(--brand-foreground)]">南京马拉松</h3>
+                                <span class="race-type-tag">10KM</span>
+                            </div>
+                            <span class="text-[13px] text-[var(--brand-muted-foreground)]">11月10日</span>
+                        </div>
+                        <div class="mt-3">
+                            <div class="status-row">
+                                <span class="status-label">报名</span>
+                                <div class="status-options">
+                                    <span class="status-opt active info"><i data-lucide="circle" class="w-3.5 h-3.5 shrink-0"></i>未报名</span>
+                                    <span class="status-opt">已报名</span>
+                                </div>
+                            </div>
+                            <div class="status-row">
+                                <span class="status-label">缴费</span>
+                                <div class="status-options">
+                                    <span class="status-opt active muted"><i data-lucide="minus" class="w-3.5 h-3.5 shrink-0"></i>未缴费</span>
+                                    <span class="status-opt">已缴费</span>
+                                </div>
+                            </div>
+                            <div class="status-row">
+                                <span class="status-label">中签</span>
+                                <div class="status-options">
+                                    <span class="status-opt active muted"><i data-lucide="minus" class="w-3.5 h-3.5 shrink-0"></i>未中签</span>
+                                    <span class="status-opt">已中签</span>
+                                    <span class="status-opt">抽签中</span>
+                                </div>
+                            </div>
+                            <div class="status-row">
+                                <span class="status-label">费用</span>
+                                <div class="flex items-center gap-1">
+                                    <span class="text-[13px] text-[var(--brand-muted-foreground)]">¥</span>
+                                    <input type="text" class="fee-input" value="120" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between mt-3">
+                            <div class="flex items-center gap-1.5 text-[var(--brand-muted-foreground)]">
+                                <i data-lucide="calendar-days" class="w-3.5 h-3.5 shrink-0"></i>
+                                <span class="text-[12px]">距比赛还有 75 天</span>
+                            </div>
+                            <a href="#" class="inline-flex items-center gap-0.5 text-[12px] text-[var(--brand-primary)] font-medium">
+                                <span>去报名</span>
+                                <i data-lucide="chevron-right" class="w-3.5 h-3.5 shrink-0"></i>
+                            </a>
+                        </div>
+                    </article>
+
+                </div>
+
+                <!-- Add Race Button (bottom of list) -->
+                <button data-dom-id="add-race-entry-2:follow.html" class="add-race-btn mt-3 w-full">
+                    <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                    <span>添加自定义赛事</span>
+                </button>
+            </section>
+        </div>
+        <!-- Section 4: Bottom Navigation -->
+        <nav data-mobile-nav="global" class="w-full h-[64px] border-t border-[var(--brand-border)] bg-[var(--brand-card)]">
+          <div class="w-full grid grid-cols-3 h-full">
+            <a data-nav-key="home" data-dom-id="nav-home:follow.html" class="flex flex-col items-center justify-center gap-1 px-1 h-full text-[var(--brand-muted-foreground)]">
+              <i data-lucide="home" class="w-5 h-5 shrink-0"></i>
+              <span class="text-[11px] leading-none whitespace-nowrap">首页</span>
+            </a>
+            <a data-nav-key="follow" data-active="true" data-dom-id="nav-follow" class="flex flex-col items-center justify-center gap-1 px-1 h-full text-[var(--brand-primary)] font-semibold">
+              <i data-lucide="heart" class="w-5 h-5 shrink-0"></i>
+              <span class="text-[11px] leading-none whitespace-nowrap">关注</span>
+            </a>
+            <a data-nav-key="mine" data-dom-id="nav-mine:follow.html" class="flex flex-col items-center justify-center gap-1 px-1 h-full text-[var(--brand-muted-foreground)]">
+              <i data-lucide="user" class="w-5 h-5 shrink-0"></i>
+              <span class="text-[11px] leading-none whitespace-nowrap">我的</span>
+            </a>
+          </div>
+        </nav>
+    </main>
+    <script>lucide.createIcons();</script>
+</body>
+</html>

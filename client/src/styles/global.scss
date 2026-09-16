@@ -1,0 +1,190 @@
+/* 全局样式 —— 晨曦跑道 (Dawn Track) 主题
+   注意：本文件被 app.scss 用 @import 引入，属于「局部文件」，
+   sass-loader 的 additionalData（sass.resource）不会向它注入变量，
+   因此这里必须显式 @import 变量文件。variables.scss 只含变量/mixin，
+   不产生任何 CSS，重复引入安全。
+   @keyframes 全部集中在这里（只在 app 引入一次，全局生效）。 */
+
+@import './variables.scss';
+
+/* ============================================================
+   入场动效 keyframes
+   只动 opacity / transform（合成层属性），不触发重排。
+   起始态写在 from、配合 animation-fill-mode: both，元素本身保持可见 ——
+   万一运行环境不执行动画，内容也不会永久隐藏。
+   ============================================================ */
+
+@keyframes dawnEnterUp {
+  from { opacity: 0; transform: translate3d(0, 28px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes dawnFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes dawnPopIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes dawnEnterLeft {
+  from { opacity: 0; transform: translate3d(-24px, 0, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes dawnDropDown {
+  from { opacity: 0; transform: translate3d(0, -14px, 0) scaleY(0.96); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0) scaleY(1); }
+}
+
+@keyframes dawnRiseIn {
+  from { opacity: 0; transform: translate3d(0, 100%, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes dawnShimmer {
+  from { background-position: -320px 0; }
+  to   { background-position: 320px 0; }
+}
+
+@keyframes dawnNumPop {
+  0%   { transform: scale(0.86); opacity: 0; }
+  60%  { transform: scale(1.04); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* ============================================================
+   基础
+   ============================================================ */
+
+page {
+  background-color: $paper;
+  color: $ink;
+  font-family: $font-sans;
+  font-size: 28px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 数字：窄体 + 等宽数字，运动计分牌感 */
+.num {
+  font-family: $font-num;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+/* ============================================================
+   通用卡片 —— 白卡 + 暖影 + 大圆角
+   ============================================================ */
+
+.card {
+  margin: 12px 28px;
+  padding: 28px;
+  border-radius: $r-lg;
+  background: $card;
+  box-shadow: $sh-1;
+}
+
+/* ============================================================
+   通用徽章
+   ============================================================ */
+
+.badge {
+  display: inline-flex;
+  padding: 6px 18px;
+  border-radius: $r-pill;
+  font-size: 22px;
+  font-weight: 600;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.4;
+}
+
+.badge-success { background: $success-light; color: $success; }
+.badge-warning { background: $warning-light; color: $warning; }
+.badge-error   { background: $error-light;   color: $error; }
+.badge-info    { background: $info-light;    color: $info; }
+.badge-muted   { background: $sand;          color: $ink-2; }
+
+/* ============================================================
+   通用按钮
+   ============================================================ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 36px;
+  border-radius: $r-pill;
+  font-size: 28px;
+  font-weight: 600;
+  border: none;
+  line-height: 1.2;
+  transition: transform 180ms $ease-out;
+}
+
+.btn-primary {
+  background: $coral;
+  color: #FFFFFF;
+  box-shadow: $sh-coral;
+}
+
+.btn-outline {
+  background: transparent;
+  color: $coral;
+  border: 2px solid $coral;
+}
+
+.btn-ghost {
+  background: $coral-soft;
+  color: $coral-deep;
+}
+
+/* ============================================================
+   工具类
+   ============================================================ */
+
+.mono {
+  font-family: $font-num;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.divider {
+  height: 1px;
+  background: $line;
+  margin: 16px 0;
+}
+
+.ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.clamp-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 40px;
+  color: $ink-3;
+  font-size: 26px;
+  text-align: center;
+}

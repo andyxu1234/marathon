@@ -1,0 +1,721 @@
+/* 我的页 —— 晨曦跑道 (Dawn Track)
+   顶部是整块珊瑚渐变资料头（底部大圆角），下方卡片依次上浮入场 */
+
+.page-mine {
+  min-height: 100vh;
+  background: $paper;
+  padding-bottom: 200px;
+}
+
+/* ============================================================
+   资料头
+   ⚠️ 含 absolute 装饰 + flex 居中，必须 isolation:isolate 且装饰 z-index:-1，
+      否则头像/昵称会被装饰层压住（踩过坑）
+   ============================================================ */
+
+.profile-header {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 48px 32px 44px;
+  background: linear-gradient(158deg, #FF8156 0%, #FF5C38 44%, #E63C1B 100%);
+  border-radius: 0 0 $r-2xl $r-2xl;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: dawnFadeIn 420ms $ease-out both;
+
+  /* 斜向光条 */
+  &::after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    top: -20%;
+    right: -40px;
+    width: 220px;
+    height: 130%;
+    transform: skewX(-18deg);
+    background: repeating-linear-gradient(
+      -45deg,
+      rgba(255, 255, 255, 0.12) 0 8px,
+      rgba(255, 255, 255, 0) 8px 24px
+    );
+    pointer-events: none;
+  }
+}
+
+/* 头像：Taro Button 默认样式必须彻底清掉，否则外圈会出现白框 */
+.profile-avatar-block {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  line-height: 0 !important;
+  min-height: 0 !important;
+  border-radius: 50%;
+
+  &::after {
+    border: none !important;
+    content: none !important;
+  }
+}
+
+.profile-avatar {
+  width: 152px;
+  height: 152px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.24);
+  border: 4px solid rgba(255, 255, 255, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-avatar__img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.profile-avatar--login {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ===== 昵称 + 性别徽章 ===== */
+
+.profile-name-row {
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.profile-name-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.profile-name {
+  font-size: 36px;
+  font-weight: 700;
+  color: #FFFFFF;
+  line-height: 1.3;
+  text-align: center;
+}
+
+/* 常驻 Input 伪装成普通文本 */
+.profile-name--input {
+  height: 52px;
+  /* 必须保持 center：昵称永远居中于头像正下方。
+     容器宽度由 TSX 按文字宽度动态设置（贴合文字，不再用 min-width 撑开），
+     因此居中不会在右侧留下空白，徽章贴在 left:100% 就等于贴在昵称旁。 */
+  text-align: center;
+  color: #FFFFFF;
+  background: transparent;
+  border: none;
+}
+
+.profile-name-ph {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 32px;
+  font-weight: 600;
+}
+
+/* 性别徽章：绝对定位在昵称容器右侧，与昵称行垂直居中。
+   脱离排版流 —— 不能占用宽度，否则会把居中于头像下方的昵称推偏。
+   容器宽度已贴合文字，所以 left:100% + 6px 就是真的贴着昵称。 */
+.profile-gender {
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-left: 6px;
+  height: 38px;
+  padding: 0 16px;
+  border-radius: $r-pill;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.profile-gender--unset {
+  background: rgba(255, 255, 255, 0.28);
+  color: #FFFFFF;
+}
+
+.profile-gender--male {
+  width: 38px;
+  padding: 0;
+  background: #FFFFFF;
+  color: #2E6FBF;
+  font-size: 26px;
+}
+
+.profile-gender--female {
+  width: 38px;
+  padding: 0;
+  background: #FFFFFF;
+  color: #C74784;
+  font-size: 26px;
+}
+
+.profile-tap-tip {
+  margin-top: 10px;
+  font-size: 23px;
+  color: rgba(255, 255, 255, 0.78);
+  text-align: center;
+}
+
+/* ===== chips 行 ===== */
+
+.profile-chips {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.profile-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 52px;
+  padding: 0 22px;
+  border-radius: $r-pill;
+  font-size: 23px;
+  font-weight: 600;
+}
+
+.profile-chip--brand {
+  background: #FFFFFF;
+  color: $coral-deep;
+}
+
+.profile-chip--age {
+  background: rgba(255, 255, 255, 0.24);
+  color: #FFFFFF;
+}
+
+.profile-chip--age-set {
+  background: $lime;
+  color: $lime-ink;
+}
+
+/* ===== 数据条 ===== */
+
+.profile-data-strip {
+  margin-top: 28px;
+  width: 100%;
+  padding: 20px 0;
+  border-radius: $r-md;
+  background: rgba(255, 255, 255, 0.16);
+  display: flex;
+  align-items: center;
+}
+
+.profile-data-item {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.profile-data-item__num {
+  font-family: $font-num;
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1;
+  color: #FFFFFF;
+  letter-spacing: -0.02em;
+}
+
+.profile-data-item__unit {
+  font-size: 22px;
+  font-weight: 500;
+  margin-left: 2px;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.profile-data-item__label {
+  font-size: 22px;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.profile-data-strip__divider {
+  width: 1px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.24);
+}
+
+/* ============================================================
+   下一场比赛
+   ============================================================ */
+
+.race-card {
+  margin: 24px 28px 0;
+  padding: 24px 28px;
+  border-radius: $r-lg;
+  background: #FFFFFF;
+  box-shadow: $sh-1;
+  animation: dawnEnterUp 500ms $ease-out 80ms both;
+}
+
+.race-card__label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 24px;
+  font-weight: 600;
+  color: $coral;
+}
+
+.race-card__main {
+  margin-top: 16px;
+}
+
+.race-card__name-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.race-card__name {
+  flex: 1;
+  min-width: 0;
+  font-size: 30px;
+  font-weight: 600;
+  color: $ink;
+  line-height: 1.35;
+}
+
+.race-card__tag {
+  flex-shrink: 0;
+  padding: 4px 16px;
+  border-radius: $r-pill;
+  background: $sand;
+  color: $ink-2;
+  font-size: 21px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.race-card__tag--full {
+  background: $coral-soft;
+  color: $coral-deep;
+}
+
+.race-card__sub {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.race-card__date {
+  font-size: 24px;
+  color: $ink-2;
+}
+
+.race-card__days {
+  font-size: 24px;
+  font-weight: 600;
+  color: $ink-3;
+}
+
+.race-card__days--soon {
+  color: $coral;
+}
+
+/* ============================================================
+   PB 卡
+   ============================================================ */
+
+.pb-card {
+  margin: 20px 28px 0;
+  padding: 26px 28px;
+  border-radius: $r-lg;
+  background: #FFFFFF;
+  box-shadow: $sh-1;
+  animation: dawnEnterUp 500ms $ease-out 140ms both;
+}
+
+.pb-card__title {
+  display: block;
+  font-size: 26px;
+  font-weight: 600;
+  color: $ink-2;
+}
+
+.pb-card__row {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+}
+
+.pb-card__item {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pb-card__item__label {
+  font-size: 22px;
+  color: $ink-3;
+}
+
+.pb-card__item__value {
+  font-family: $font-num;
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1;
+  color: $ink;
+  letter-spacing: -0.02em;
+}
+
+.pb-card__divider {
+  width: 1px;
+  height: 56px;
+  background: $line;
+}
+
+/* ============================================================
+   我的排名
+   ============================================================ */
+
+.rank-card {
+  margin: 20px 28px 0;
+  padding: 24px 28px;
+  border-radius: $r-lg;
+  background: #FFFFFF;
+  box-shadow: $sh-1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  animation: dawnEnterUp 500ms $ease-out 200ms both;
+}
+
+.rank-card__left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.rank-card__rank {
+  font-size: 24px;
+  color: $ink-2;
+}
+
+.rank-card__rank-num {
+  font-family: $font-num;
+  font-size: 42px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: $coral;
+  letter-spacing: -0.02em;
+  margin: 0 4px;
+}
+
+.rank-card__metric {
+  font-size: 22px;
+  color: $ink-3;
+}
+
+.rank-card__right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  max-width: 50%;
+}
+
+.rank-card__value {
+  font-family: $font-num;
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: $ink;
+  letter-spacing: -0.02em;
+}
+
+.rank-card__insight {
+  font-size: 22px;
+  color: $ink-2;
+  text-align: right;
+  line-height: 1.5;
+}
+
+/* ============================================================
+   通用区块
+   ============================================================ */
+
+.section {
+  margin-top: 32px;
+  padding: 0 28px;
+  animation: dawnEnterUp 500ms $ease-out 260ms both;
+}
+
+.section-title {
+  display: block;
+  margin-bottom: 14px;
+  font-size: 30px;
+  font-weight: 700;
+  color: $ink;
+  letter-spacing: -0.01em;
+}
+
+/* ===== 最近完赛 ===== */
+
+.finished-list {
+  background: #FFFFFF;
+  border-radius: $r-lg;
+  box-shadow: $sh-1;
+  overflow: hidden;
+}
+
+.finished-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px 28px;
+  border-bottom: 1px solid $line-soft;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.finished-item__left {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.finished-item__name {
+  font-size: 27px;
+  font-weight: 600;
+  color: $ink;
+  line-height: 1.35;
+}
+
+.finished-item__date {
+  font-size: 22px;
+  color: $ink-3;
+}
+
+.finished-item__right {
+  flex-shrink: 0;
+}
+
+.finished-item__time {
+  font-family: $font-num;
+  font-size: 28px;
+  font-weight: 700;
+  color: $ink-2;
+  letter-spacing: -0.01em;
+}
+
+.finished-item__time--pb {
+  color: $coral;
+}
+
+/* ===== 菜单 ===== */
+
+.menu-list {
+  background: #FFFFFF;
+  border-radius: $r-lg;
+  box-shadow: $sh-1;
+  overflow: hidden;
+}
+
+.menu-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 28px;
+  border-bottom: 1px solid $line-soft;
+  transition: background-color 160ms $ease-out;
+}
+
+.menu-item--last {
+  border-bottom: none;
+}
+
+.menu-item__text {
+  flex: 1;
+  min-width: 0;
+  font-size: 28px;
+  color: $ink;
+}
+
+.menu-item__badge {
+  flex-shrink: 0;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 10px;
+  border-radius: $r-pill;
+  background: $coral;
+  color: #FFFFFF;
+  font-size: 21px;
+  font-weight: 600;
+  text-align: center;
+  line-height: 36px;
+}
+
+/* ============================================================
+   底部 picker
+   ============================================================ */
+
+.picker-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(20, 16, 14, 0.4);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  animation: dawnFadeIn 240ms $ease-out both;
+}
+
+.picker-sheet {
+  background: #FFFFFF;
+  border-radius: $r-xl $r-xl 0 0;
+  padding-bottom: env(safe-area-inset-bottom);
+  animation: dawnRiseIn 320ms $ease-out both;
+}
+
+.picker-sheet__title {
+  padding: 30px 32px 20px;
+  font-size: 30px;
+  font-weight: 700;
+  color: $ink;
+  text-align: center;
+}
+
+/* .picker-sheet__list 不设 max-height：
+   8 个选项实际高约 736px，此前 640px 上限在非滚动 View 上不裁剪，
+   超出部分直接叠到"取消"行上（65岁及以上重叠的根因）。
+   整卡最高约 916 设计px(≈458pt)，全屏底部面板放得下，无需限高。 */
+
+.picker-sheet__item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 26px 32px;
+  font-size: 28px;
+  color: $ink;
+  border-bottom: 1px solid $line-soft;
+}
+
+.picker-sheet__item--active {
+  color: $coral;
+  font-weight: 600;
+  background: $coral-mist;
+}
+
+.picker-sheet__check {
+  position: absolute;
+  right: 32px;
+  font-size: 28px;
+  color: $coral;
+  font-weight: 700;
+}
+
+.picker-sheet__cancel {
+  margin: 12px 0 8px;
+  padding: 24px 32px;
+  font-size: 28px;
+  color: $ink-2;
+  text-align: center;
+}
+
+/* ===== 跑者等级说明（复用 picker-overlay / picker-sheet 骨架） ===== */
+.level-sheet__list {
+  padding: 0 24px;
+}
+
+.level-sheet__row {
+  padding: 20px;
+  margin-bottom: 12px;
+  border-radius: $r-lg;
+  background: $sand;
+}
+
+.level-sheet__row--current {
+  background: $coral-mist;
+  box-shadow: inset 0 0 0 1px $coral;
+}
+
+.level-sheet__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.level-sheet__name {
+  font-size: 28px;
+  font-weight: 700;
+  color: $ink;
+}
+
+.level-sheet__badge {
+  padding: 2px 14px;
+  border-radius: $r-pill;
+  font-size: 20px;
+  font-weight: 600;
+  color: #FFFFFF;
+  background: $coral;
+}
+
+.level-sheet__need {
+  display: block;
+  margin-top: 6px;
+  font-size: 24px;
+  font-weight: 600;
+  color: $coral;
+}
+
+.level-sheet__desc {
+  display: block;
+  margin-top: 2px;
+  font-size: 22px;
+  color: $ink-3;
+}
+
+.level-sheet__note {
+  padding: 8px 32px 0;
+  font-size: 20px;
+  color: $ink-3;
+  text-align: center;
+}
+
+/* ===== 抖音专属：一键使用抖音头像昵称 ===== */
+
+.profile-use-douyin-btn {
+  margin-top: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 52px;
+  padding: 0 28px;
+  border-radius: 26px;
+  background: #FE2C55;
+  color: #FFFFFF;
+  font-size: 23px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+

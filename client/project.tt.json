@@ -1,0 +1,13 @@
+{
+  "projectname": "marathon-mini-program",
+  "description": "马拉松赛事追踪小程序（抖音 / 字节跳动小程序）",
+  "appid": "tt750d03b0eb76b2ac01",
+  "setting": {
+    "es6": false,
+    "postcss": false,
+    "minified": false,
+    "urlCheck": false
+  },
+  "compileType": "miniProgram",
+  "condition": {}
+}

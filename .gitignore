@@ -1,0 +1,72 @@
+# ── 敏感信息 / 环境变量 ──
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets.json
+
+# ── 依赖目录 ──
+node_modules/
+bower_components/
+.venv/
+venv/
+env/
+__pypackages__/
+
+# ── 构建产物 ──
+dist/
+build/
+client/dist/
+client/.swc/
+*.tgz
+.cache/
+
+# ── Python ──
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# ── 上传的用户文件 ──
+server/uploads/
+
+# ── IDE / 编辑器 ──
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ── 工具缓存 / 临时目录 ──
+.codebuddy/
+.trae/
+.workbuddy/
+.preflight/
+.design_src/
+build_log.txt
+console.error(e.messageText))
+
+# ── 日志 ──
+*.log
+logs/
+
+# ── 设计中间产物 ──
+runtime-dispatch-manifest.json
+runtime-orchestration-summary.json
+validation-report.json
+finish-readiness-report.json
+restore-contract-report.json
+page-generation-summary.json
+
+# ── 系统文件 ──
+.DS_Store
+Thumbs.db
+desktop.ini

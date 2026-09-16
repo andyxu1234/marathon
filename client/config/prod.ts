@@ -1,0 +1,7 @@
+import { merge } from 'webpack-merge'
+import baseConfig from './index'
+
+export default merge({}, baseConfig, {
+  mini: {},
+  h5: {}
+})

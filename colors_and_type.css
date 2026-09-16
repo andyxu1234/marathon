@@ -1,0 +1,85 @@
+/* Marathon Mini-Program Design Tokens */
+/* Brand prefix: brand */
+
+:root {
+  /* Brand Primary - Fresh Teal */
+  --brand: #10B981;
+  --brand-foreground: #FFFFFF;
+  --brand-light: #ECFDF5;
+
+  /* Background & Surface */
+  --brand-background: #F0FDFA;
+  --brand-foreground: #0F172A;
+  --brand-card: #FFFFFF;
+  --brand-card-foreground: #0F172A;
+  --brand-popover: #FFFFFF;
+  --brand-popover-foreground: #0F172A;
+
+  /* Primary */
+  --brand-primary: #10B981;
+  --brand-primary-foreground: #FFFFFF;
+
+  /* Muted / Secondary */
+  --brand-muted: #F1F5F9;
+  --brand-muted-foreground: #64748B;
+
+  /* Border & Input */
+  --brand-border: #E2E8F0;
+  --brand-input: #F1F5F9;
+  --brand-ring: #10B981;
+
+  /* Destructive */
+  --brand-destructive: #EF4444;
+  --brand-destructive-foreground: #FFFFFF;
+
+  /* Ink Scale */
+  --ink: #0F172A;
+  --ink-2: #64748B;
+  --ink-3: #94A3B8;
+
+  /* Surface Scale */
+  --surface: #FFFFFF;
+  --surface-2: #F1F5F9;
+
+  /* Line */
+  --line: #E2E8F0;
+
+  /* State Colors - state indicators */
+  --state-success: #10B981;
+  --state-success-light: #ECFDF5;
+  --state-warning: #F59E0B;
+  --state-warning-light: #FEF3C7;
+  --state-error: #EF4444;
+  --state-error-light: #FEE2E2;
+  --state-info: #0EA5E9;
+  --state-info-light: #E0F2FE;
+
+  /* Radius Scale */
+  --brand-radius-sm: 4px;
+  --brand-radius-md: 8px;
+  --brand-radius-lg: 12px;
+  --brand-radius-xl: 16px;
+  --brand-radius-pill: 999px;
+
+  /* Shadow Scale */
+  --brand-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.03);
+  --brand-shadow-md: 0 2px 8px -2px rgba(0, 0, 0, 0.04);
+  --brand-shadow-lg: 0 8px 24px -6px rgba(0, 0, 0, 0.04);
+
+  /* Typography */
+  --brand-font-sans: "Inter", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+
+html {
+  font-family: var(--brand-font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--brand-font-sans);
+  color: var(--brand-foreground);
+  background-color: var(--brand-background);
+}

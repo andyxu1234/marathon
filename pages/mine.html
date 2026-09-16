@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的</title>
+    <style id="theme-vars">
+/* Marathon Mini-Program Design Tokens */
+/* Brand prefix: brand */
+
+:root {
+  /* Brand Primary - Fresh Teal */
+  --brand: #10B981;
+  --brand-foreground: #FFFFFF;
+  --brand-light: #ECFDF5;
+
+  /* Background & Surface */
+  --brand-background: #F0FDFA;
+  --brand-foreground: #0F172A;
+  --brand-card: #FFFFFF;
+  --brand-card-foreground: #0F172A;
+  --brand-popover: #FFFFFF;
+  --brand-popover-foreground: #0F172A;
+
+  /* Primary */
+  --brand-primary: #10B981;
+  --brand-primary-foreground: #FFFFFF;
+
+  /* Muted / Secondary */
+  --brand-muted: #F1F5F9;
+  --brand-muted-foreground: #64748B;
+
+  /* Border & Input */
+  --brand-border: #E2E8F0;
+  --brand-input: #F1F5F9;
+  --brand-ring: #10B981;
+
+  /* Destructive */
+  --brand-destructive: #EF4444;
+  --brand-destructive-foreground: #FFFFFF;
+
+  /* Ink Scale */
+  --ink: #0F172A;
+  --ink-2: #64748B;
+  --ink-3: #94A3B8;
+
+  /* Surface Scale */
+  --surface: #FFFFFF;
+  --surface-2: #F1F5F9;
+
+  /* Line */
+  --line: #E2E8F0;
+
+  /* State Colors - state indicators */
+  --state-success: #10B981;
+  --state-success-light: #ECFDF5;
+  --state-warning: #F59E0B;
+  --state-warning-light: #FEF3C7;
+  --state-error: #EF4444;
+  --state-error-light: #FEE2E2;
+  --state-info: #0EA5E9;
+  --state-info-light: #E0F2FE;
+
+  /* Radius Scale */
+  --brand-radius-sm: 4px;
+  --brand-radius-md: 8px;
+  --brand-radius-lg: 12px;
+  --brand-radius-xl: 16px;
+  --brand-radius-pill: 999px;
+
+  /* Shadow Scale */
+  --brand-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.03);
+  --brand-shadow-md: 0 2px 8px -2px rgba(0, 0, 0, 0.04);
+  --brand-shadow-lg: 0 8px 24px -6px rgba(0, 0, 0, 0.04);
+
+  /* Typography */
+  --brand-font-sans: "Inter", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+
+html {
+  font-family: var(--brand-font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--brand-font-sans);
+  color: var(--brand-foreground);
+  background-color: var(--brand-background);
+}
+
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--brand-background);
+    --color-foreground: var(--brand-foreground);
+    --color-card: var(--brand-card);
+    --color-card-foreground: var(--brand-card-foreground);
+    --color-popover: var(--brand-popover);
+    --color-popover-foreground: var(--brand-popover-foreground);
+    --color-primary: var(--brand-primary);
+    --color-primary-foreground: var(--brand-primary-foreground);
+    --color-muted: var(--brand-muted);
+    --color-muted-foreground: var(--brand-muted-foreground);
+    --color-destructive: var(--brand-destructive);
+    --color-destructive-foreground: var(--brand-destructive-foreground);
+    --color-border: var(--brand-border);
+    --color-input: var(--brand-input);
+    --color-ring: var(--brand-ring);
+    --radius-sm: var(--brand-radius-sm);
+    --radius-md: var(--brand-radius-md);
+    --radius-lg: var(--brand-radius-lg);
+    --radius-xl: var(--brand-radius-xl);
+  }
+  @layer base {
+    body { background: var(--brand-background); color: var(--brand-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+    <style id="semantic-token-fallback">
+      .bg-background { background-color: var(--brand-background); }
+      .text-background { color: var(--brand-background); }
+      .border-background { border-color: var(--brand-background); }
+      .ring-background { --tw-ring-color: var(--brand-background); }
+      .bg-foreground { background-color: var(--brand-foreground); }
+      .text-foreground { color: var(--brand-foreground); }
+      .border-foreground { border-color: var(--brand-foreground); }
+      .ring-foreground { --tw-ring-color: var(--brand-foreground); }
+      .bg-card { background-color: var(--brand-card); }
+      .text-card { color: var(--brand-card); }
+      .border-card { border-color: var(--brand-card); }
+      .ring-card { --tw-ring-color: var(--brand-card); }
+      .bg-card-foreground { background-color: var(--brand-card-foreground); }
+      .text-card-foreground { color: var(--brand-card-foreground); }
+      .border-card-foreground { border-color: var(--brand-card-foreground); }
+      .ring-card-foreground { --tw-ring-color: var(--brand-card-foreground); }
+      .bg-popover { background-color: var(--brand-popover); }
+      .text-popover { color: var(--brand-popover); }
+      .border-popover { border-color: var(--brand-popover); }
+      .ring-popover { --tw-ring-color: var(--brand-popover); }
+      .bg-popover-foreground { background-color: var(--brand-popover-foreground); }
+      .text-popover-foreground { color: var(--brand-popover-foreground); }
+      .border-popover-foreground { border-color: var(--brand-popover-foreground); }
+      .ring-popover-foreground { --tw-ring-color: var(--brand-popover-foreground); }
+      .bg-primary { background-color: var(--brand-primary); }
+      .text-primary { color: var(--brand-primary); }
+      .border-primary { border-color: var(--brand-primary); }
+      .ring-primary { --tw-ring-color: var(--brand-primary); }
+      .bg-primary-foreground { background-color: var(--brand-primary-foreground); }
+      .text-primary-foreground { color: var(--brand-primary-foreground); }
+      .border-primary-foreground { border-color: var(--brand-primary-foreground); }
+      .ring-primary-foreground { --tw-ring-color: var(--brand-primary-foreground); }
+      .bg-muted { background-color: var(--brand-muted); }
+      .text-muted { color: var(--brand-muted); }
+      .border-muted { border-color: var(--brand-muted); }
+      .ring-muted { --tw-ring-color: var(--brand-muted); }
+      .bg-muted-foreground { background-color: var(--brand-muted-foreground); }
+      .text-muted-foreground { color: var(--brand-muted-foreground); }
+      .border-muted-foreground { border-color: var(--brand-muted-foreground); }
+      .ring-muted-foreground { --tw-ring-color: var(--brand-muted-foreground); }
+      .bg-destructive { background-color: var(--brand-destructive); }
+      .text-destructive { color: var(--brand-destructive); }
+      .border-destructive { border-color: var(--brand-destructive); }
+      .ring-destructive { --tw-ring-color: var(--brand-destructive); }
+      .bg-destructive-foreground { background-color: var(--brand-destructive-foreground); }
+      .text-destructive-foreground { color: var(--brand-destructive-foreground); }
+      .border-destructive-foreground { border-color: var(--brand-destructive-foreground); }
+      .ring-destructive-foreground { --tw-ring-color: var(--brand-destructive-foreground); }
+      .bg-border { background-color: var(--brand-border); }
+      .text-border { color: var(--brand-border); }
+      .border-border { border-color: var(--brand-border); }
+      .ring-border { --tw-ring-color: var(--brand-border); }
+      .bg-input { background-color: var(--brand-input); }
+      .text-input { color: var(--brand-input); }
+      .border-input { border-color: var(--brand-input); }
+      .ring-input { --tw-ring-color: var(--brand-input); }
+      .bg-ring { background-color: var(--brand-ring); }
+      .text-ring { color: var(--brand-ring); }
+      .border-ring { border-color: var(--brand-ring); }
+      .ring-ring { --tw-ring-color: var(--brand-ring); }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+</head>
+<body class="min-h-screen font-sans antialiased">
+    <main>
+      <style id="critical-layout">
+        /* Mobile root frame */
+        .mine-frame {
+          max-width: 420px;
+          margin: 0 auto;
+          min-height: 100vh;
+          background: var(--brand-background);
+          position: relative;
+        }
+        /* Profile header */
+        .profile-header {
+          padding: 24px 16px;
+          position: relative;
+          background: linear-gradient(180deg, var(--brand) 0%, #C92B38 100%);
+        }
+        /* Stats cards overlap */
+        .stats-cards {
+          margin: -20px 16px 0;
+          position: relative;
+          z-index: 10;
+        }
+        /* Menu list dividers */
+        .menu-item {
+          border-bottom: 1px solid var(--brand-border);
+        }
+        .menu-item:last-child {
+          border-bottom: none;
+        }
+        /* Content spacing above bottom nav */
+        .mine-content {
+          padding-bottom: 64px;
+        }
+        /* Sticky bottom nav */
+        .mine-nav {
+          position: sticky;
+          bottom: 0;
+        }
+      </style>
+      <div class="mine-frame">
+        <div class="mine-content">
+
+          <!-- Section 1: Profile Header -->
+          <section class="profile-header">
+            <button type="button" aria-label="设置" class="absolute top-4 right-4 text-white/90" style="background:transparent;border:0;padding:4px;">
+              <i data-lucide="settings" class="w-5 h-5"></i>
+            </button>
+            <div class="flex flex-col items-center gap-3 pt-2">
+              <div class="w-16 h-16 rounded-full flex items-center justify-center" style="background:rgba(255,255,255,0.2);backdrop-filter:blur(6px);border:2px solid #FFFFFF;">
+                <span class="text-white text-2xl font-bold leading-none">张</span>
+              </div>
+              <div class="text-center">
+                <div class="text-white text-lg font-bold">张伟</div>
+                <div class="flex items-center justify-center gap-2 mt-1.5">
+                  <span class="text-white rounded" style="background:rgba(255,255,255,0.2);font-size:11px;padding:2px 8px;">金标跑者</span>
+                  <span class="text-white/70 text-[13px]">ID: MR20260042</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Section 2: Stats Cards -->
+          <section id="stats-cards" class="stats-cards grid grid-cols-3 gap-2">
+            <div class="bg-card rounded-lg border text-center" style="padding:16px 8px;box-shadow:var(--brand-shadow-sm);">
+              <div class="leading-none">
+                <span class="text-primary text-2xl font-bold">5</span>
+                <span class="text-muted-foreground text-[13px] ml-0.5">场</span>
+              </div>
+              <div class="text-muted-foreground text-[11px] mt-1">已报名</div>
+            </div>
+            <div class="bg-card rounded-lg border text-center" style="padding:16px 8px;box-shadow:var(--brand-shadow-sm);">
+              <div class="leading-none">
+                <span class="text-foreground text-2xl font-bold">¥1,280</span>
+              </div>
+              <div class="text-muted-foreground text-[11px] mt-1">累计花费</div>
+            </div>
+            <div class="bg-card rounded-lg border text-center" style="padding:16px 8px;box-shadow:var(--brand-shadow-sm);">
+              <div class="leading-none">
+                <span class="text-primary text-2xl font-bold">486</span>
+                <span class="text-muted-foreground text-[13px] ml-0.5">km</span>
+              </div>
+              <div class="text-muted-foreground text-[11px] mt-1">跑步里程</div>
+            </div>
+          </section>
+
+          <!-- Section 3: Recent Races -->
+          <section>
+            <h2 class="text-base font-semibold" style="margin:20px 16px 12px;">近期完赛</h2>
+            <div style="padding:0 16px;">
+              <div class="bg-card rounded-lg border flex items-center justify-between" style="padding:12px 16px;margin-bottom:8px;">
+                <div class="flex items-start gap-2 min-w-0">
+                  <i data-lucide="medal" class="w-4 h-4 text-primary shrink-0 mt-0.5"></i>
+                  <div class="min-w-0">
+                    <div class="text-sm font-semibold text-foreground">北京马拉松</div>
+                    <div class="text-xs text-muted-foreground">2025年10月20日</div>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                  <span class="text-primary text-base font-bold">4:12:33</span>
+                  <span class="rounded" style="background:var(--state-success-light);color:var(--state-success);font-size:11px;padding:1px 6px;">完赛</span>
+                </div>
+              </div>
+              <div class="bg-card rounded-lg border flex items-center justify-between" style="padding:12px 16px;margin-bottom:8px;">
+                <div class="flex items-start gap-2 min-w-0">
+                  <i data-lucide="medal" class="w-4 h-4 text-primary shrink-0 mt-0.5"></i>
+                  <div class="min-w-0">
+                    <div class="text-sm font-semibold text-foreground">上海马拉松</div>
+                    <div class="text-xs text-muted-foreground">2025年11月17日</div>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                  <span class="text-primary text-base font-bold">3:58:21</span>
+                  <span class="rounded" style="background:var(--brand-light);color:var(--brand-primary);font-size:11px;padding:1px 6px;">PB</span>
+                  <span class="rounded" style="background:var(--state-success-light);color:var(--state-success);font-size:11px;padding:1px 6px;">完赛</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Section 4: Menu List -->
+          <section>
+            <h2 class="text-base font-semibold" style="margin:20px 16px 12px;">更多</h2>
+            <div class="bg-card rounded-lg border overflow-hidden" style="margin:0 16px;">
+              <div class="menu-item flex items-center" style="padding:14px 16px;">
+                <i data-lucide="user" class="w-[18px] h-[18px] text-muted-foreground shrink-0"></i>
+                <span class="text-sm text-foreground ml-3 flex-1">我的信息</span>
+                <i data-lucide="chevron-right" class="w-4 h-4 text-muted-foreground shrink-0"></i>
+              </div>
+              <div class="menu-item flex items-center" style="padding:14px 16px;">
+                <i data-lucide="bell" class="w-[18px] h-[18px] text-muted-foreground shrink-0"></i>
+                <span class="text-sm text-foreground ml-3 flex-1">赛事提醒</span>
+                <span class="bg-primary text-primary-foreground rounded-full" style="font-size:11px;padding:0 6px;line-height:18px;margin-right:8px;">3</span>
+                <i data-lucide="chevron-right" class="w-4 h-4 text-muted-foreground shrink-0"></i>
+              </div>
+              <div class="menu-item flex items-center" style="padding:14px 16px;">
+                <i data-lucide="footprints" class="w-[18px] h-[18px] text-muted-foreground shrink-0"></i>
+                <span class="text-sm text-foreground ml-3 flex-1">跑步记录</span>
+                <i data-lucide="chevron-right" class="w-4 h-4 text-muted-foreground shrink-0"></i>
+              </div>
+              <div class="menu-item flex items-center" style="padding:14px 16px;">
+                <i data-lucide="help-circle" class="w-[18px] h-[18px] text-muted-foreground shrink-0"></i>
+                <span class="text-sm text-foreground ml-3 flex-1">帮助中心</span>
+                <i data-lucide="chevron-right" class="w-4 h-4 text-muted-foreground shrink-0"></i>
+              </div>
+              <div class="menu-item flex items-center" style="padding:14px 16px;">
+                <i data-lucide="info" class="w-[18px] h-[18px] text-muted-foreground shrink-0"></i>
+                <span class="text-sm text-foreground ml-3 flex-1">关于我们</span>
+                <i data-lucide="chevron-right" class="w-4 h-4 text-muted-foreground shrink-0"></i>
+              </div>
+            </div>
+          </section>
+
+        </div>
+
+        <!-- Section 5: Bottom Navigation -->
+        <nav data-mobile-nav="global" class="mine-nav w-full h-[64px] border-t border-[var(--brand-border)] bg-[var(--brand-card)]">
+          <div class="w-full grid grid-cols-3 h-full">
+            <a data-nav-key="home" data-dom-id="nav-home:mine.html" class="flex flex-col items-center justify-center gap-1 px-1 h-full text-[var(--brand-muted-foreground)]">
+              <i data-lucide="home" class="w-5 h-5 shrink-0"></i>
+              <span class="text-[11px] leading-none whitespace-nowrap">首页</span>
+            </a>
+            <a data-nav-key="follow" data-dom-id="nav-follow:mine.html" class="flex flex-col items-center justify-center gap-1 px-1 h-full text-[var(--brand-muted-foreground)]">
+              <i data-lucide="heart" class="w-5 h-5 shrink-0"></i>
+              <span class="text-[11px] leading-none whitespace-nowrap">关注</span>
+            </a>
+            <a data-nav-key="mine" data-active="true" data-dom-id="nav-mine" class="flex flex-col items-center justify-center gap-1 px-1 h-full text-[var(--brand-primary)] font-semibold">
+              <i data-lucide="user" class="w-5 h-5 shrink-0"></i>
+              <span class="text-[11px] leading-none whitespace-nowrap">我的</span>
+            </a>
+          </div>
+        </nav>
+      </div>
+    </main>
+    <script>lucide.createIcons();</script>
+</body>
+</html>
