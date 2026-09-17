@@ -1,4 +1,5 @@
 export default definePageConfig({
   navigationBarTitleText: '赛事详情',
-  navigationStyle: 'custom'
+  navigationBarBackgroundColor: '#FFF8F3',
+  navigationBarTextStyle: 'black'
 })

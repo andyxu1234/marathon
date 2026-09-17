@@ -197,12 +197,6 @@ export default function AddRace() {
     return '请选择比赛地点'
   }, [selectedEvent, province, city])
 
-  const handleBack = () => {
-    Taro.navigateBack({ delta: 1 }).catch(() => {
-      Taro.switchTab({ url: '/pages/follow/index' })
-    })
-  }
-
   const handleSubmit = async () => {
     const name = eventName.trim()
     if (!name && !selectedEvent) {
@@ -256,15 +250,6 @@ export default function AddRace() {
 
   return (
     <View className='page-add-race'>
-      {/* 顶部导航 */}
-      <View className='nav-bar'>
-        <View className='nav-icon-btn' onClick={handleBack}>
-          <Icon name='chevron-left' size={44} color='#14100E' />
-        </View>
-        <Text className='nav-title'>添加赛事</Text>
-        <View className='nav-spacer' />
-      </View>
-
       {/* 搜索提示 */}
       <View className='search-tip'>
         <Icon name='search' size={24} color='#FF5C38' />

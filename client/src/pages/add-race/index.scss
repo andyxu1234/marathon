@@ -7,43 +7,6 @@
 }
 
 /* ============================================================
-   顶部导航
-   ============================================================ */
-
-.nav-bar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  height: 88px;
-  padding: 0 20px;
-  background: #FFFFFF;
-}
-
-.nav-icon-btn {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.nav-title {
-  flex: 1;
-  min-width: 0;
-  font-size: 32px;
-  font-weight: 600;
-  color: $ink;
-  text-align: center;
-}
-
-.nav-spacer {
-  width: 64px;
-  flex-shrink: 0;
-}
-
-/* ============================================================
    搜索提示条
    ============================================================ */
 

@@ -1,6 +1,6 @@
 import { View, Text, Input, Button, Image } from '@tarojs/components'
 import { useState, useMemo, useRef } from 'react'
-import Taro, { useDidShow } from '@tarojs/taro'
+import Taro, { useDidShow, usePullDownRefresh } from '@tarojs/taro'
 import Icon from '@/components/Icon'
 import TabBar from '@/components/TabBar'
 import api, { resolveUrl } from '@/services/api'
@@ -170,6 +170,17 @@ export default function Mine() {
     if (Taro.getStorageSync('token')) fetchStats()
   })
 
+  // 下拉刷新：config 里开了 enablePullDownRefresh，必须实现本回调并
+  // 调用 stopPullDownRefresh()，否则转圈动画会一直停不下来。
+  usePullDownRefresh(async () => {
+    try {
+      await userStore.refreshProfile().catch(() => {})
+      if (Taro.getStorageSync('token')) await fetchStats()
+    } finally {
+      Taro.stopPullDownRefresh()
+    }
+  })
+
   const user = userStore.user
   const profile = useMemo<UserStats | null>(() => {
     if (stats) return stats
@@ -249,19 +260,35 @@ export default function Mine() {
   }
 
   /** 抖音专属：一键授权使用抖音头像 + 昵称
-   *  tt.getUserProfile 每次调用弹授权，同意后直接返回抖音头像 URL 和昵称，
-   *  无需用户自己选图/输入。头像 URL 是抖音 CDN 直链，需 downloadFile
-   *  转本地临时路径后再 uploadFile 存到自己服务器。 */
+   *
+   *  tt.getUserProfile 每次调用弹授权，同意后返回抖音头像 CDN URL 和昵称，
+   *  头像 URL 是抖音 CDN 直链，需 downloadFile 转本地临时路径后再 uploadFile
+   *  存到自己服务器。
+   *
+   *  ⚠️ 平台合规（2023.6.6 起抖音收紧审核）：
+   *     必须在抖音开放平台「设置 → 隐私协议」中声明用户信息 scope，
+   *     否则 getUserProfile 直接失败，错误码：
+   *       111679 — api scope is not declared in the privacy agreement
+   *       111680 — privacy permission is not authorized
+   *     另：必须由用户 tap 手势触发，不能自动调用（否则 111601）。
+   *
+   *  ⚠️ 域名白名单：downloadFile 拉的是抖音 CDN（*.douyinpic.com 等），
+   *     需在「开发设置 → 服务器域名 → downloadFile 合法域名」里配置，
+   *     否则真机上下载头像会失败。
+   */
   const handleUseDouyinProfile = async () => {
     if (!loggedIn) await userStore.ensureLoggedIn()
+
+    Taro.showLoading({ title: '同步中', mask: true })
     try {
       const res: any = await Taro.getUserProfile({
         desc: '用于完善个人资料',
       })
       const userInfo = res?.userInfo
-      if (!userInfo) return
-
-      Taro.showLoading({ title: '同步中', mask: true })
+      if (!userInfo) {
+        Taro.hideLoading()
+        return
+      }
 
       // 1. 昵称直接存
       const newNick = userInfo.nickName
@@ -279,16 +306,34 @@ export default function Mine() {
             await userStore.updateProfile({ avatar: up.url })
           }
         } catch (e) {
-          console.warn('[DouyinProfile] 头像上传失败', e)
+          console.warn('[DouyinProfile] 头像下载/上传失败', e)
+          // 昵称可能已成功，仅提示头像失败
+          Taro.hideLoading()
+          Taro.showToast({ title: '头像同步失败，请手动选择', icon: 'none' })
+          fetchStats()
+          return
         }
       }
 
-      fetchStats()
+      await fetchStats()
       Taro.hideLoading()
       Taro.showToast({ title: '已同步抖音资料', icon: 'success' })
-    } catch {
+    } catch (e: any) {
       Taro.hideLoading()
-      // 用户拒绝授权 → 静默忽略
+      // 用户主动拒绝授权 → 静默忽略；其余失败给出可读提示，
+      // 便于区分「隐私协议没配」和「用户点了拒绝」。
+      const code = e?.errNo ?? e?.errorCode
+      const msg = String(e?.errMsg || '')
+      const denied = msg.includes('auth deny') || code === 111690
+      if (denied) return
+      if (code === 111679 || code === 111680) {
+        Taro.showToast({ title: '需在抖音后台配置隐私协议', icon: 'none' })
+      } else if (code === 111601) {
+        Taro.showToast({ title: '请直接点击按钮授权', icon: 'none' })
+      } else {
+        console.warn('[DouyinProfile] 授权失败', e)
+        Taro.showToast({ title: '同步失败，请手动设置', icon: 'none' })
+      }
     }
   }
 
@@ -486,7 +531,9 @@ export default function Mine() {
             ) : null}
 
             {/* 抖音专属：一键使用抖音头像昵称
-                微信端无此入口（微信用户点头像/昵称原生面板更顺滑） */}
+                微信端无此入口（微信用户点头像/昵称原生面板更顺滑）
+                注意：tt.getUserProfile 必须由 tap 手势触发（否则报 111601），
+                且需在抖音后台配置隐私协议 scope（否则报 111679/111680）。*/}
             {isDouyin && (isAvatarCustomized === false || isNickCustomized === false) && (
               <View className='profile-use-douyin-btn' onClick={handleUseDouyinProfile}>
                 <Text>一键使用抖音头像昵称</Text>

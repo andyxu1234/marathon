@@ -1,5 +1,5 @@
 import { View, Text } from '@tarojs/components'
-import { useState, useRef, ReactNode } from 'react'
+import { useState, useRef } from 'react'
 import Taro, { useDidShow } from '@tarojs/taro'
 import Icon from '@/components/Icon'
 import Empty from '@/components/Empty'
@@ -35,7 +35,6 @@ export default function RaceDetail() {
   const [detail, setDetail] = useState<EventDetail | null>(null)
   const [loading, setLoading] = useState(false)
   const [favoriting, setFavoriting] = useState(false)
-  const [statusBarHeight, setStatusBarHeight] = useState(0)
   const { ensureLoggedIn } = useUserStore()
 
   // 同 id 复用已加载数据：从列表反复进出同一赛事时秒开，不重复请求/重渲染（避免卡顿感）
@@ -68,44 +67,7 @@ export default function RaceDetail() {
 
   useDidShow(() => {
     fetchDetail()
-    if (statusBarHeight === 0) {
-      try {
-        const info = Taro.getSystemInfoSync()
-        setStatusBarHeight(info.statusBarHeight || 0)
-      } catch (_) {
-        // ignore
-      }
-    }
   })
-
-  const navBarStyle = { paddingTop: statusBarHeight ? `${statusBarHeight}px` : undefined }
-
-  const renderNavBar = (rightNode: ReactNode = <View className='nav-spacer' />) => (
-    <View className='nav-bar' style={navBarStyle}>
-      <View className='nav-icon-btn' onClick={handleBack}>
-        <Icon name='chevron-left' size={44} color='#14100E' />
-      </View>
-      <Text className='nav-title'>赛事详情</Text>
-      {rightNode}
-    </View>
-  )
-
-  const handleBack = () => {
-    Taro.navigateBack({ delta: 1 }).catch(() => {
-      Taro.switchTab({ url: '/pages/home/index' })
-    })
-  }
-
-  const handleShare = () => {
-    Taro.showActionSheet({
-      itemList: ['分享给好友', '复制链接'],
-      success: (res) => {
-        if (res.tapIndex === 1) {
-          Taro.setClipboardData({ data: `赛事：${detail?.event_name}` })
-        }
-      }
-    })
-  }
 
   const handleFavorite = async () => {
     if (!detail) return
@@ -153,7 +115,6 @@ export default function RaceDetail() {
   if (!detail && loading) {
     return (
       <View className='page-race-detail'>
-        {renderNavBar()}
         {/* 骨架屏：结构占位 + 珊瑚呼吸光，替代"白屏+加载中文字"，消除突然全量渲染的跳跃感 */}
         <View className='sk'>
           <View className='sk-hero' />
@@ -182,7 +143,6 @@ export default function RaceDetail() {
   if (!detail) {
     return (
       <View className='page-race-detail'>
-        {renderNavBar()}
         <Empty text='赛事不存在' icon='search' />
       </View>
     )
@@ -241,13 +201,6 @@ export default function RaceDetail() {
 
   return (
     <View className='page-race-detail'>
-      {/* 顶部导航 */}
-      {renderNavBar(
-        <View className='nav-icon-btn' onClick={handleShare}>
-          <Icon name='share-2' size={36} color='#14100E' />
-        </View>
-      )}
-
       {/* Hero 区 */}
       <View className='hero-section'>
         <Text className='hero-title'>{detail.event_name}</Text>
