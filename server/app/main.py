@@ -94,7 +94,7 @@ app = FastAPI(
 # 注册路由
 app.include_router(api_router)
 
-# 用户上传头像静态目录（URL: /uploads/avatars/xxx.png → server/uploads/avatars/xxx.png）
+# 用户上传头像静态目录（URL: /m-uploads/avatars/xxx.png → server/uploads/avatars/xxx.png）
 # 注：先 mkdir 防止 StaticFiles(directory=...) 在目录不存在时启动失败
 from pathlib import Path
 

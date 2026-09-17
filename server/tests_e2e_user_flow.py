@@ -93,7 +93,7 @@ def main():
     assert ok(code), (code, up)
     print("upload:", up)
     avatar_url = up["url"]
-    assert avatar_url.startswith("/uploads/avatars/"), avatar_url
+    assert avatar_url.startswith("/m-uploads/avatars/"), avatar_url
 
     print("\n=== 4. PUT /users/me 更新昵称 + 头像 ===")
     new_nick = f"AndyTest_{uuid.uuid4().hex[:6]}"

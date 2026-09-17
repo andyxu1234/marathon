@@ -4,24 +4,36 @@ import Taro from '@tarojs/taro'
 //   模拟器调试：默认局域网 IP 192.168.1.4:8000 也兼容 PC 浏览器
 //   真机预览/扫码调试：直接用默认值即可，如需改 IP 设 TARO_APP_API_BASE 环境变量
 // 开发期注意：project.config.json 的 urlCheck=false 已关闭合法域名校验，http 协议随意用。
+//
+// ⚠️ 关键：必须「直接」书写 process.env.XXX 字面量，不能有任何运行时包装。
+//
+//   Taro 的 DefinePlugin 只会把代码里**静态出现**的 `process.env.NODE_ENV`
+//   替换成字符串字面量。一旦写成下面这种"防御式"形式：
+//
+//       typeof process !== 'undefined' && process && process.env
+//         ? process.env.NODE_ENV : 'default'
+//
+//   编译后 `process.env.NODE_ENV` 虽然被替换成了 "production"，但整段仍然被
+//   `typeof process !== 'undefined'` 守卫着 —— 小程序运行时没有 process 全局，
+//   条件恒为 false，于是永远拿不到注入值，静默回退到 fallback（连局域网 IP）。
+//
+//   正确做法：编译期直接用字面量比较，运行时不做任何 process 检测。
 const DEFAULT_DEV = 'http://192.168.1.4:8000'
+const DEFAULT_PROD = 'https://marathoninfo.top'
 
-function _envStr(key: string, fallback: string): string {
-  try {
-    // 兼容 Taro 编译期替换 / weapp 端全局 process / H5 端缺失 process 三种情况
-    if (typeof process !== 'undefined' && process && (process as any).env) {
-      const v = (process as any).env[key]
-      if (v !== undefined && v !== null && v !== '') return String(v)
-    }
-  } catch {}
-  return fallback
-}
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+const _injectedApiBase: string = process.env.TARO_APP_API_BASE || ''
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+const _injectedNodeEnv: string = process.env.NODE_ENV || 'development'
 
-const isProd = _envStr('NODE_ENV', 'development') === 'production'
-export const API_BASE_URL = _envStr(
-  'TARO_APP_API_BASE',
-  isProd ? 'https://marathoninfo.top' : DEFAULT_DEV
-)
+const _isProd = _injectedNodeEnv === 'production'
+
+export const API_BASE_URL =
+  _injectedApiBase !== ''
+    ? _injectedApiBase
+    : _isProd
+      ? DEFAULT_PROD
+      : DEFAULT_DEV
 
 const BASE_URL = `${API_BASE_URL}/api/v1`
 const REQUEST_TIMEOUT = 15000

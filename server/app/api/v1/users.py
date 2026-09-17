@@ -110,7 +110,7 @@ async def upload_avatar(
     settings: SettingsDep,
     file: UploadFile = File(..., description="头像图片文件，最大 5MB，支持 jpg/png/webp/gif"),
 ):
-    """上传用户头像，返回 /uploads/avatars/xxx.ext 相对 URL，前端可直接存 user.avatar"""
+    """上传用户头像，返回 /m-uploads/avatars/xxx.ext 相对 URL，前端可直接存 user.avatar"""
     # 1. 大小校验
     max_bytes = settings.AVATAR_MAX_MB * 1024 * 1024
     # UploadFile.size 可能为 None，保守在 read 时也限一次

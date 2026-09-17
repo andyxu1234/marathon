@@ -83,7 +83,13 @@ export default defineConfig(async (merge) => {
     //   - TARO_APP_API_BASE：显式覆盖 API 地址，用于真机调试（手机无法访问 localhost）。
     defineConstants: {
       'process.env.TARO_APP_API_BASE': JSON.stringify(process.env.TARO_APP_API_BASE || ''),
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
+      // Taro CLI 在 build 时会带 --mode production，但不会写进 process.env，
+      // 因此这里以命令行是否含 --watch 来判定：watch = 开发，否则 = 生产。
+      'process.env.NODE_ENV': JSON.stringify(
+        process.argv.includes('--watch')
+          ? 'development'
+          : process.env.NODE_ENV || 'production'
+      )
     },
     copy: { patterns: [], options: {} },
     framework: 'react',

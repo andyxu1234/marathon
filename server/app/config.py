@@ -52,9 +52,11 @@ class Settings(BaseSettings):
     DEBUG: bool = False
 
     # ===== 用户上传（头像） =====
-    # 上传目录：server/uploads/avatars，前端通过 /uploads/avatars/xxx.png 访问
+    # 上传目录：server/uploads/avatars，前端通过 /m-uploads/avatars/xxx.png 访问
+    # 前缀用 /m-uploads 而非 /uploads，避免与同服务器上 world-cup-prediction
+    # 项目的静态资源路径冲突（Nginx 按前缀分发，两项目共用同一域名）。
     UPLOAD_DIR: str = str(Path(__file__).resolve().parent.parent / "uploads")
-    UPLOAD_URL_PREFIX: str = "/uploads"
+    UPLOAD_URL_PREFIX: str = "/m-uploads"
     AVATAR_MAX_MB: int = 5
     AVATAR_ALLOW_EXTS: tuple = (".jpg", ".jpeg", ".png", ".webp", ".gif")
 
