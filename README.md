@@ -4,6 +4,9 @@
 
 技术架构参考 `world-cup-prediction` 项目，采用 **Taro 4 + React 18 + TypeScript** 前端 + **FastAPI + SQLAlchemy 2 async** 后端，一套代码同时覆盖微信小程序与 H5 多端。
 
+> 🖥️ **在线介绍页**：<https://andyxu1234.github.io/marathon/>
+> 源码在 [`docs/`](docs/)，由 GitHub Pages 直接托管，改完 push 即生效。
+
 ---
 
 ## 目录结构
@@ -37,7 +40,13 @@ marathon/
 │   ├── .env.example            # 环境变量模板
 │   └── requirements.txt
 │
-└── pages/                      # 设计稿 HTML（5 页）
+├── pages/                      # 设计稿 HTML（5 页）
+│
+└── docs/                       # GitHub Pages 介绍页（源站）
+    ├── index.html              # 项目落地页（滚动动画 + 截图灯箱）
+    ├── screenshot/             # 小程序界面截图
+    ├── asset/                  # 架构图
+    └── tech/                   # 技术方案文档
 ```
 
 ---

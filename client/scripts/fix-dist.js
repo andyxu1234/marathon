@@ -32,8 +32,27 @@ if (target === 'weapp') {
   const cleanup = path.join(distDir, 'project.tt.json')
 
   if (fs.existsSync(src)) {
-    fs.copyFileSync(src, dst)
-    console.log('[fix-dist] ✓ dist/project.config.json 已生成（微信）')
+    let cfg
+    try {
+      cfg = JSON.parse(fs.readFileSync(src, 'utf8'))
+    } catch (e) {
+      console.error('[fix-dist] ✗ 解析 client/project.config.json 失败:', e.message)
+      process.exit(1)
+    }
+
+    // miniprogramRoot 是「相对于项目根目录」的路径。
+    // 根目录配置里写 './dist'，是为了支持「把 client 目录整个导入开发者工具」；
+    // 但这份文件被复制到 dist 后，若再把 dist 当作项目根导入，工具会去找
+    // dist/dist/app.json 并报「该目录下未找到 app.json」。
+    // 因此 dist 内这一份改为 './'，保证两种导入方式都能正常工作。
+    cfg.miniprogramRoot = './'
+
+    if (!cfg.appid) {
+      console.warn('[fix-dist] ⚠ project.config.json 里 appid 为空，开发者工具可能报 AppID 不合法')
+    }
+
+    fs.writeFileSync(dst, JSON.stringify(cfg, null, 2) + '\n', 'utf8')
+    console.log('[fix-dist] ✓ dist/project.config.json 已生成（微信，miniprogramRoot=./）')
   } else {
     console.warn('[fix-dist] ⚠ 根目录 project.config.json 不存在')
   }

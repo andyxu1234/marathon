@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>马拉松赛事追踪小程序 · 报名中签全流程追踪 & 跑者排行</title>
+<meta name="description" content="马拉松赛事追踪小程序：全国马拉松赛事查询与多维筛选、报名 / 缴费 / 中签三维追踪、跑者排行榜与个人战绩统计。Taro 4 + React 18 前端，FastAPI + SQLAlchemy 2 异步后端，多源采集 + LLM 富化的赛事数据管道。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="马拉松赛事追踪小程序">
+<meta property="og:description" content="全国赛事一网打尽 · 报名 / 缴费 / 中签三维追踪 · 跑者排行与个人战绩。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   Design tokens —— 对齐小程序「晨曦跑道」主题
+   （见 client/src/styles/variables.scss）
+   ============================================================ */
+:root {
+  --coral:        #FF5C38;
+  --coral-deep:   #E8411C;
+  --coral-soft:   #FFE9E2;
+  --coral-mist:   #FFF3EF;
+
+  --lime:         #D8F34A;
+  --lime-deep:    #B8D62B;
+  --lime-soft:    #F2F9D8;
+  --lime-ink:     #3D4A12;
+
+  --paper:        #FFF8F3;
+  --card:         #FFFFFF;
+  --sand:         #F7F0E9;
+  --sand-deep:    #EFE4D9;
+
+  --ink:          #14100E;
+  --ink-2:        #6B5F58;
+  --ink-3:        #A3968D;
+
+  --line:         #EFE4D9;
+  --line-soft:    #F7F0E9;
+
+  --live:         #1F9D5B;
+  --soon:         #E8940C;
+
+  --r-sm:  12px;
+  --r-md:  18px;
+  --r-lg:  24px;
+  --r-xl:  32px;
+
+  --sh-1: 0 2px 6px rgba(92, 45, 28, .05);
+  --sh-2: 0 6px 18px rgba(92, 45, 28, .07);
+  --sh-3: 0 14px 34px rgba(92, 45, 28, .11);
+  --sh-coral: 0 10px 28px rgba(255, 92, 56, .25);
+  --sh-lime:  0 10px 28px rgba(184, 214, 43, .32);
+
+  --font-sans: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --font-num:  'Oswald', 'DIN Alternate', 'Bahnschrift', system-ui, sans-serif;
+
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+  --ease-spring: cubic-bezier(.34, 1.4, .64, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-sans);
+  color: var(--ink);
+  background: var(--paper);
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+/* 背景：极淡的跑道网格 + 双色光晕 */
+.bg-layer {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(20, 16, 14, .028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(20, 16, 14, .028) 1px, transparent 1px);
+  background-size: 96px 96px;
+}
+.bg-layer::before,
+.bg-layer::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+}
+.bg-layer::before {
+  width: 620px; height: 620px;
+  top: -180px; right: -160px;
+  background: rgba(255, 92, 56, .16);
+}
+.bg-layer::after {
+  width: 520px; height: 520px;
+  top: 40vh; left: -220px;
+  background: rgba(216, 243, 74, .22);
+}
+
+/* ============================ Nav ============================ */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 1.1rem 2rem;
+  background: rgba(255, 248, 243, .82);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid transparent;
+  transition: padding .3s var(--ease-out), border-color .3s var(--ease-out), box-shadow .3s var(--ease-out);
+}
+nav.scrolled {
+  padding: .7rem 2rem;
+  border-bottom-color: var(--line);
+  box-shadow: var(--sh-1);
+}
+.nav-content {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  font-family: var(--font-num);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.logo-mark {
+  width: 30px; height: 30px;
+  border-radius: 9px;
+  background: var(--coral);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: .95rem;
+  box-shadow: var(--sh-coral);
+}
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+  list-style: none;
+}
+.nav-links a {
+  position: relative;
+  color: var(--ink-2);
+  text-decoration: none;
+  font-size: .875rem;
+  font-weight: 500;
+  transition: color .25s var(--ease-out);
+}
+.nav-links a:hover { color: var(--coral); }
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  left: 0; bottom: -6px;
+  height: 2px; width: 0;
+  border-radius: 2px;
+  background: var(--coral);
+  transition: width .25s var(--ease-out);
+}
+.nav-links a:hover::after { width: 100%; }
+.nav-gh {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .45rem 1rem;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  font-size: .82rem;
+  font-weight: 600;
+  color: var(--ink) !important;
+  text-decoration: none;
+  transition: all .25s var(--ease-out);
+}
+.nav-gh:hover {
+  background: var(--ink);
+  color: var(--paper) !important;
+  transform: translateY(-1px);
+}
+.nav-gh::after { display: none; }
+
+/* ============================ Hero ============================ */
+.hero {
+  position: relative;
+  padding: 9.5rem 2rem 5.5rem;
+  overflow: hidden;
+}
+.hero-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .4rem 1rem;
+  border-radius: 999px;
+  background: var(--coral-soft);
+  color: var(--coral-deep);
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+  margin-bottom: 1.6rem;
+  animation: fadeUp .7s var(--ease-out) both;
+}
+.hero h1 {
+  font-size: clamp(2.4rem, 6.4vw, 4.6rem);
+  line-height: 1.08;
+  font-weight: 900;
+  letter-spacing: -.015em;
+  animation: fadeUp .7s var(--ease-out) .08s both;
+}
+.hero h1 .hl {
+  position: relative;
+  display: inline-block;
+  z-index: 1;
+}
+.hero h1 .hl::after {
+  content: '';
+  position: absolute;
+  left: -.06em; right: -.06em;
+  bottom: .06em;
+  height: .34em;
+  background: var(--lime);
+  border-radius: 3px;
+  z-index: -1;
+  transform-origin: left center;
+  animation: swipe .7s var(--ease-out) .5s both;
+}
+.hero h1 .line2 {
+  display: block;
+  font-family: var(--font-num);
+  font-weight: 700;
+  letter-spacing: .04em;
+  color: var(--ink-3);
+  font-size: clamp(1.6rem, 4.4vw, 3rem);
+  margin-top: .35rem;
+}
+@keyframes swipe { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+.hero-sub {
+  max-width: 640px;
+  margin-top: 1.6rem;
+  font-size: clamp(.98rem, 2vw, 1.12rem);
+  color: var(--ink-2);
+  animation: fadeUp .7s var(--ease-out) .16s both;
+}
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .8rem;
+  margin-top: 2.2rem;
+  animation: fadeUp .7s var(--ease-out) .24s both;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .8rem 1.7rem;
+  border-radius: 999px;
+  font-size: .92rem;
+  font-weight: 700;
+  text-decoration: none;
+  border: 1.5px solid transparent;
+  transition: all .25s var(--ease-out);
+}
+.btn-primary {
+  background: var(--coral);
+  color: #fff;
+  box-shadow: var(--sh-coral);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 34px rgba(255, 92, 56, .34); }
+.btn-lime {
+  background: var(--lime);
+  color: var(--lime-ink);
+  box-shadow: var(--sh-lime);
+}
+.btn-lime:hover { transform: translateY(-2px); }
+.btn-ghost {
+  border-color: var(--line);
+  background: var(--card);
+  color: var(--ink);
+}
+.btn-ghost:hover { border-color: var(--coral); color: var(--coral); transform: translateY(-2px); }
+
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 4rem;
+  animation: fadeUp .7s var(--ease-out) .32s both;
+}
+.stat {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 1.35rem 1.2rem;
+  box-shadow: var(--sh-1);
+}
+.stat-num {
+  display: block;
+  font-family: var(--font-num);
+  font-size: clamp(1.9rem, 4vw, 2.7rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: .01em;
+}
+.stat-num small {
+  font-size: .5em;
+  font-weight: 500;
+  color: var(--ink-3);
+  margin-left: .15em;
+}
+.stat-label {
+  display: block;
+  margin-top: .55rem;
+  font-size: .8rem;
+  color: var(--ink-2);
+  letter-spacing: .04em;
+}
+.stat:nth-child(1) .stat-num { color: var(--coral); }
+.stat:nth-child(2) .stat-num { color: var(--ink); }
+.stat:nth-child(3) .stat-num { color: var(--ink); }
+.stat:nth-child(4) .stat-num { color: var(--live); }
+
+/* ========================= Sections ========================= */
+section { padding: 5.5rem 2rem; }
+.wrap { max-width: 1180px; margin: 0 auto; }
+
+.sec-head { max-width: 660px; margin-bottom: 3rem; }
+.sec-head.is-center { margin-left: auto; margin-right: auto; text-align: center; }
+.sec-tag {
+  display: inline-block;
+  font-family: var(--font-num);
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--coral);
+  margin-bottom: .9rem;
+}
+.sec-title {
+  font-size: clamp(1.7rem, 3.6vw, 2.5rem);
+  font-weight: 900;
+  line-height: 1.2;
+  letter-spacing: -.01em;
+}
+.sec-desc {
+  margin-top: .85rem;
+  color: var(--ink-2);
+  font-size: 1rem;
+}
+
+/* ========================= Overview ========================= */
+.overview-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  margin-bottom: 1.8rem;
+}
+.overview-meta span {
+  font-size: .78rem;
+  color: var(--ink-2);
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: .35rem .9rem;
+}
+.overview-meta span.is-accent {
+  background: var(--coral-soft);
+  border-color: transparent;
+  color: var(--coral-deep);
+  font-weight: 600;
+}
+.overview-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+  padding: clamp(1.6rem, 3.4vw, 3rem);
+  box-shadow: var(--sh-2);
+}
+.ov-lead {
+  font-size: clamp(1.02rem, 2vw, 1.16rem);
+  font-weight: 500;
+  line-height: 1.8;
+}
+.ov-lead strong { color: var(--coral-deep); font-weight: 700; }
+.overview-card p { color: var(--ink-2); margin-top: 1.1rem; }
+.ov-sub {
+  font-family: var(--font-num);
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin: 2.8rem 0 1.2rem;
+}
+.ov-list { list-style: none; display: grid; gap: .85rem; }
+.ov-list li {
+  display: flex;
+  gap: .8rem;
+  color: var(--ink-2);
+  font-size: .95rem;
+  line-height: 1.75;
+}
+.ov-list li::before {
+  content: '';
+  flex: none;
+  width: 7px; height: 7px;
+  margin-top: .62em;
+  border-radius: 50%;
+  background: var(--coral);
+}
+.ov-list li b { color: var(--ink); font-weight: 700; }
+.ov-list li code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .86em;
+  color: var(--coral-deep);
+  background: var(--sand);
+  border-radius: 5px;
+  padding: .1em .4em;
+}
+.chips { display: flex; flex-wrap: wrap; gap: .5rem; }
+.chips span {
+  font-size: .79rem;
+  font-weight: 500;
+  color: var(--ink);
+  background: var(--sand);
+  border-radius: 999px;
+  padding: .35rem .85rem;
+}
+.ov-actions { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: 2.4rem; }
+
+/* ========================= Features ========================= */
+.section-sand {
+  background: linear-gradient(180deg, var(--paper) 0%, var(--coral-mist) 45%, var(--paper) 100%);
+}
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 1.4rem;
+}
+.f-card {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: 1.9rem;
+  overflow: hidden;
+  transition: transform .35s var(--ease-out), box-shadow .35s var(--ease-out), border-color .35s var(--ease-out);
+}
+.f-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  background: var(--coral);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform .35s var(--ease-out);
+}
+.f-card:nth-child(3n+2)::before { background: var(--lime-deep); }
+.f-card:nth-child(3n+3)::before { background: var(--soon); }
+.f-card:hover {
+  transform: translateY(-6px);
+  border-color: transparent;
+  box-shadow: var(--sh-3);
+}
+.f-card:hover::before { transform: scaleX(1); }
+.f-icon {
+  width: 52px; height: 52px;
+  border-radius: 15px;
+  display: grid;
+  place-items: center;
+  font-size: 1.5rem;
+  background: var(--coral-soft);
+  margin-bottom: 1.15rem;
+}
+.f-card:nth-child(3n+2) .f-icon { background: var(--lime-soft); }
+.f-card:nth-child(3n+3) .f-icon { background: #FDF1DA; }
+.f-card h3 {
+  font-size: 1.12rem;
+  font-weight: 700;
+  margin-bottom: .6rem;
+  letter-spacing: -.005em;
+}
+.f-card p { color: var(--ink-2); font-size: .92rem; line-height: 1.75; }
+.f-tags { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: 1rem; }
+.f-tags span {
+  font-size: .72rem;
+  font-family: var(--font-num);
+  letter-spacing: .06em;
+  color: var(--ink-2);
+  background: var(--sand);
+  border-radius: 6px;
+  padding: .2rem .55rem;
+}
+
+/* ======================== Screenshots ======================== */
+.shots-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1.5rem;
+}
+.shot {
+  position: relative;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  aspect-ratio: 9 / 19;
+  background: var(--sand);
+  border: 1px solid var(--line);
+  box-shadow: var(--sh-1);
+  cursor: zoom-in;
+  transition: transform .35s var(--ease-out), box-shadow .35s var(--ease-out);
+}
+.shot:hover { transform: translateY(-8px); box-shadow: var(--sh-3); }
+.shot img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+  transition: transform .6s var(--ease-out);
+}
+.shot:hover img { transform: scale(1.04); }
+.shot-label {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 1.6rem 1.1rem 1.05rem;
+  background: linear-gradient(to top, rgba(20, 16, 14, .9), rgba(20, 16, 14, .45) 55%, transparent);
+  color: #fff;
+  transform: translateY(100%);
+  transition: transform .35s var(--ease-out);
+}
+.shot:hover .shot-label { transform: translateY(0); }
+.shot-label h4 { font-size: 1rem; font-weight: 700; }
+.shot-label p { font-size: .8rem; opacity: .82; margin-top: .2rem; }
+.shot-hint {
+  position: absolute;
+  top: .75rem; right: .75rem;
+  font-size: .68rem;
+  letter-spacing: .06em;
+  padding: .22rem .6rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .88);
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* ========================= Pipeline ========================= */
+.pipeline {
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: var(--r-xl);
+  padding: clamp(1.8rem, 4vw, 3.4rem);
+  overflow: hidden;
+  position: relative;
+}
+.pipeline::after {
+  content: '';
+  position: absolute;
+  width: 480px; height: 480px;
+  right: -160px; bottom: -220px;
+  border-radius: 50%;
+  background: rgba(216, 243, 74, .14);
+  filter: blur(70px);
+}
+.pipeline .sec-tag { color: var(--lime); }
+.pipeline .sec-title { color: var(--paper); }
+.pipeline .sec-desc { color: rgba(255, 248, 243, .68); }
+.flow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 1rem;
+  margin-top: 2.4rem;
+  position: relative;
+  z-index: 1;
+}
+.flow-step {
+  background: rgba(255, 248, 243, .05);
+  border: 1px solid rgba(255, 248, 243, .12);
+  border-radius: var(--r-md);
+  padding: 1.4rem;
+  transition: background .3s var(--ease-out), transform .3s var(--ease-out);
+}
+.flow-step:hover {
+  background: rgba(255, 248, 243, .09);
+  transform: translateY(-4px);
+}
+.flow-idx {
+  font-family: var(--font-num);
+  font-size: .78rem;
+  letter-spacing: .16em;
+  color: var(--lime);
+  font-weight: 600;
+}
+.flow-step h4 { margin: .6rem 0 .5rem; font-size: 1rem; color: var(--paper); }
+.flow-step p { font-size: .86rem; color: rgba(255, 248, 243, .66); line-height: 1.7; }
+.flow-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin-top: 2rem;
+  position: relative;
+  z-index: 1;
+}
+.flow-foot span {
+  font-size: .76rem;
+  color: var(--lime);
+  border: 1px solid rgba(216, 243, 74, .3);
+  border-radius: 999px;
+  padding: .28rem .75rem;
+}
+
+/* ========================== Tech ========================== */
+.tech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(255px, 1fr));
+  gap: 1.4rem;
+}
+.tech-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: 1.8rem;
+  box-shadow: var(--sh-1);
+  transition: transform .3s var(--ease-out), box-shadow .3s var(--ease-out);
+}
+.tech-card:hover { transform: translateY(-5px); box-shadow: var(--sh-2); }
+.tech-card h4 {
+  font-family: var(--font-num);
+  font-size: .82rem;
+  font-weight: 600;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  padding-bottom: .8rem;
+  margin-bottom: .9rem;
+  border-bottom: 2px solid var(--sand);
+}
+.tech-card:nth-child(1) h4 { color: var(--coral); border-bottom-color: var(--coral-soft); }
+.tech-card:nth-child(2) h4 { color: var(--live); border-bottom-color: #DFF5E8; }
+.tech-card:nth-child(3) h4 { color: var(--soon); border-bottom-color: #FDF1DA; }
+.tech-card:nth-child(4) h4 { color: var(--lime-ink); border-bottom-color: var(--lime-soft); }
+.tech-list { list-style: none; display: grid; gap: .55rem; }
+.tech-list li {
+  font-size: .88rem;
+  color: var(--ink-2);
+  padding-left: 1.1rem;
+  position: relative;
+}
+.tech-list li::before {
+  content: '';
+  position: absolute;
+  left: 0; top: .62em;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--sand-deep);
+}
+
+/* ========================== CTA ========================== */
+.cta {
+  text-align: center;
+  padding: 5rem 2rem 6rem;
+}
+.cta-card {
+  max-width: 1180px;
+  margin: 0 auto;
+  background: linear-gradient(135deg, var(--coral) 0%, var(--coral-deep) 100%);
+  border-radius: var(--r-xl);
+  padding: clamp(2.4rem, 6vw, 4.4rem) clamp(1.6rem, 4vw, 3rem);
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(232, 65, 28, .28);
+}
+.cta-card::before {
+  content: '';
+  position: absolute;
+  width: 420px; height: 420px;
+  top: -170px; right: -120px;
+  border-radius: 50%;
+  background: rgba(216, 243, 74, .3);
+  filter: blur(60px);
+}
+.cta-card h2 {
+  font-size: clamp(1.7rem, 4vw, 2.6rem);
+  font-weight: 900;
+  line-height: 1.25;
+  position: relative;
+  z-index: 1;
+}
+.cta-card p {
+  margin: 1rem auto 0;
+  max-width: 560px;
+  color: rgba(255, 255, 255, .88);
+  position: relative;
+  z-index: 1;
+}
+.cta-btns {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: .8rem;
+  margin-top: 2.2rem;
+  position: relative;
+  z-index: 1;
+}
+.cta-card .btn-light { background: #fff; color: var(--coral-deep); }
+.cta-card .btn-light:hover { transform: translateY(-2px); }
+.cta-card .btn-outline {
+  border-color: rgba(255, 255, 255, .5);
+  color: #fff;
+}
+.cta-card .btn-outline:hover {
+  background: rgba(255, 255, 255, .12);
+  border-color: #fff;
+  transform: translateY(-2px);
+}
+
+/* ========================= Footer ========================= */
+footer {
+  border-top: 1px solid var(--line);
+  padding: 3rem 2rem;
+  background: var(--card);
+}
+.footer-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.2rem;
+}
+.footer-logo {
+  font-family: var(--font-num);
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  font-size: 1rem;
+}
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.4rem;
+}
+.footer-links a {
+  color: var(--ink-2);
+  text-decoration: none;
+  font-size: .85rem;
+  transition: color .25s var(--ease-out);
+}
+.footer-links a:hover { color: var(--coral); }
+.copyright {
+  max-width: 1180px;
+  margin: 1.8rem auto 0;
+  padding-top: 1.6rem;
+  border-top: 1px solid var(--line-soft);
+  color: var(--ink-3);
+  font-size: .8rem;
+  text-align: center;
+}
+
+/* ======================= Lightbox ======================= */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: rgba(20, 16, 14, .92);
+}
+.lightbox.active { display: flex; }
+.lightbox img {
+  max-width: 100%;
+  max-height: 88vh;
+  border-radius: var(--r-md);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, .6);
+}
+.lightbox-close {
+  position: absolute;
+  top: 1.6rem; right: 1.6rem;
+  width: 44px; height: 44px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 248, 243, .14);
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background .25s var(--ease-out), transform .25s var(--ease-out);
+}
+.lightbox-close:hover { background: var(--coral); transform: rotate(90deg); }
+
+/* ======================= Animations ======================= */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(26px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity .7s var(--ease-out), transform .7s var(--ease-out);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+  * { animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+}
+
+/* ======================= Responsive ======================= */
+@media (max-width: 1080px) and (min-width: 861px) {
+  .nav-links { gap: 1.05rem; }
+  .nav-links a { font-size: .8rem; }
+}
+@media (max-width: 860px) {
+  .nav-links { display: none; }
+  .hero-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  section { padding: 4rem 1.25rem; }
+  .hero { padding: 8rem 1.25rem 3.5rem; }
+  .shots-grid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; }
+  .footer-inner { flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+<div class="bg-layer"></div>
+
+<!-- ============================ Nav ============================ -->
+<nav id="navbar">
+  <div class="nav-content">
+    <div class="logo">
+      <span class="logo-mark">🏃</span>
+      <span>Marathon</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#overview">项目概览</a></li>
+      <li><a href="#features">功能亮点</a></li>
+      <li><a href="#screenshots">界面展示</a></li>
+      <li><a href="#pipeline">数据管道</a></li>
+      <li><a href="#tech">技术架构</a></li>
+      <li><a class="nav-gh" href="https://github.com/andyxu1234/marathon" target="_blank" rel="noopener">GitHub ↗</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ============================ Hero ============================ -->
+<header class="hero">
+  <div class="hero-inner">
+    <span class="badge">🏃 马拉松赛事追踪小程序</span>
+    <h1>
+      全国赛事一网打尽<br>
+      <span class="hl">报名 · 缴费 · 中签</span>全流程追踪
+      <span class="line2">FIND · TRACK · RUN</span>
+    </h1>
+    <p class="hero-sub">
+      浏览全国马拉松赛事、五维筛选、关注收藏，记录每一场比赛的报名与中签进度；
+      跑者排行榜横向对比总跑量、半马 / 全马 PB 与总花费。
+      一套 Taro 代码同时交付<strong>微信小程序</strong>与 H5。
+    </p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#screenshots">看看界面 →</a>
+      <a class="btn btn-lime" href="https://github.com/andyxu1234/marathon" target="_blank" rel="noopener">⭐ 源码仓库</a>
+      <a class="btn btn-ghost" href="#pipeline">数据管道怎么跑的</a>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-num">6<small>个</small></span>
+        <span class="stat-label">小程序页面</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">26<small>个</small></span>
+        <span class="stat-label">服务端接口</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">7<small>张</small></span>
+        <span class="stat-label">业务数据表</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">4<small>维</small></span>
+        <span class="stat-label">跑者排行指标</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ========================== Overview ========================== -->
+<section id="overview">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-tag">Overview</div>
+      <h2 class="sec-title">项目概览</h2>
+      <p class="sec-desc">背景、方案与关键工程决策</p>
+    </div>
+
+    <div class="overview-meta reveal">
+      <span class="is-accent">全栈 · 赛事工具</span>
+      <span>Taro 4 + React 18 + FastAPI</span>
+      <span>独立开发（小程序 / 服务端 / 数据管道 / 设计系统）</span>
+    </div>
+
+    <div class="overview-card reveal">
+      <p class="ov-lead">
+        面向马拉松爱好者的赛事查询与个人追踪工具：把「找赛事 → 判断要不要报 → 盯报名 / 缴费 / 中签 → 沉淀个人战绩」
+        这条散落在十几个公众号与网页里的链路，收进一个<strong>六个页面的小程序</strong>里。
+      </p>
+      <p>
+        前端是 Taro 4.1 + React 18 + TypeScript，一套代码跨编译微信小程序与 H5；后端是 FastAPI + SQLAlchemy 2.0
+        异步服务（7 张业务表 / 26 个端点 / 7 个 Alembic 迁移版本），提供赛事列表与多维筛选、关注收藏、
+        报名状态流转、跑者排行、个人战绩统计与配置字典六组接口。数据不靠人工整理，而是一条
+        <strong>「列表卡片抓取 → LLM 联网补全 → 二轮筛选 → 增量 diff 入库」</strong>的富化管道，
+        由 APScheduler 每天定时跑，原始数据全程留痕可审计。
+      </p>
+
+      <h3 class="ov-sub">核心工作与亮点</h3>
+      <ul class="ov-list">
+        <li><b>赛事数据富化管道</b>：抓取最酷赛事列表卡片后，用 LLM 联网补全缺失字段，再做二轮筛选与字段级 sha1 增量 diff
+          （<code>zuicool_event_id</code> 为增量键），只对新增或卡片字段变化的赛事重新富化，原始卡片 / 富化 / 最终三态 JSON 全量留痕。</li>
+        <li><b>确定性与可审计优先</b>：规则解析负责结构化字段，AI 只在规则失效时兜底；每条原始数据落 <code>mi_event_source</code>
+          表，保留来源 URL、抓取时间与内容哈希，字段来源可回溯。</li>
+        <li><b>报名状态三维建模</b>：把「报名 / 缴费 / 中签」拆成三个独立状态维度落在 <code>mi_registration</code> 表，
+          关注页用 chips 随手切换，并反算开赛倒计时；同一张表同时承载完赛时间、参赛号码与 PB 标记，驱动个人战绩与排行榜。</li>
+        <li><b>跑者排行实时聚合</b>：总跑量 / 半马 PB / 全马 PB / 总花费四个指标，官方赛事与自定义赛事两条数据来源合并，
+          按比赛类型推算里程（全马 42.195 / 半马 21.0975 / 健康跑 5 / 越野 30），并支持性别与年龄段筛选。</li>
+        <li><b>一套代码两端 + 原生登录闭环</b>：Taro 同一份代码编译微信小程序、抖音小程序与 H5；
+          小程序走 <code>Taro.login</code> → 后端换 openid → JWT 静默登录，H5 保留密码登录用于本地调试。</li>
+        <li><b>自建设计系统「晨曦跑道」</b>：珊瑚橙 × 青柠双主色 + 暖白纸面层级，设计 token 全部落到 SCSS 变量并自动注入每个样式文件，
+          入场动效以 mixin 收敛，保证 6 个页面视觉语言一致。</li>
+      </ul>
+
+      <h3 class="ov-sub">技术栈</h3>
+      <div class="chips">
+        <span>Taro 4.1</span>
+        <span>React 18</span>
+        <span>TypeScript</span>
+        <span>Zustand</span>
+        <span>Sass</span>
+        <span>FastAPI</span>
+        <span>SQLAlchemy 2.0 async</span>
+        <span>MySQL 8.0</span>
+        <span>Alembic</span>
+        <span>APScheduler</span>
+        <span>httpx</span>
+        <span>BeautifulSoup4</span>
+        <span>JWT</span>
+        <span>LLM 富化</span>
+      </div>
+
+      <div class="ov-actions">
+        <a class="btn btn-primary" href="https://github.com/andyxu1234/marathon" target="_blank" rel="noopener">查看源码 ↗</a>
+        <a class="btn btn-ghost" href="https://github.com/andyxu1234/marathon/blob/main/README.md" target="_blank" rel="noopener">阅读 README</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================== Features ========================== -->
+<section id="features" class="section-sand">
+  <div class="wrap">
+    <div class="sec-head is-center reveal">
+      <div class="sec-tag">Core Features</div>
+      <h2 class="sec-title">核心功能亮点</h2>
+      <p class="sec-desc">围绕「找到一场值得跑的赛事」这一个目标做减法</p>
+    </div>
+
+    <div class="features-grid">
+      <div class="f-card reveal">
+        <div class="f-icon">🔎</div>
+        <h3>五维筛选，精准找赛</h3>
+        <p>关键词搜索 + 赛事类型 / 报名状态 / 赛事级别 / 省份 / 开赛月份五个下拉，
+          筛选项全部由后端从真实数据里聚合返回，不会出现「选了却没有结果」的空枚举。</p>
+        <div class="f-tags"><span>KEYWORD</span><span>MONTH</span><span>PROVINCE</span></div>
+      </div>
+
+      <div class="f-card reveal">
+        <div class="f-icon">📇</div>
+        <h3>赛事卡片一眼看懂</h3>
+        <p>卡片直接给结论：报名中 / 即将开跑 / 比赛中 / 已结束四态色彩标识、起止日期、地点、
+          报名费与赛事级别；报名中与即将开跑的赛事优先上浮，热门与推荐单独排序。</p>
+        <div class="f-tags"><span>STATUS</span><span>LEVEL</span><span>FEE</span></div>
+      </div>
+
+      <div class="f-card reveal">
+        <div class="f-icon">❤️</div>
+        <h3>报名 · 缴费 · 中签三维追踪</h3>
+        <p>关注后的赛事进入追踪面板：三个状态 chip 随手切换即可记录「已报名 / 已缴费 / 抽签中 / 已中签」，
+          报名费可就单场覆盖默认值，卡片同时显示距开赛天数与缴费、中签进度。</p>
+        <div class="f-tags"><span>REGISTRATION</span><span>PAYMENT</span><span>LOTTERY</span></div>
+      </div>
+
+      <div class="f-card reveal">
+        <div class="f-icon">🏆</div>
+        <h3>跑者排行榜</h3>
+        <p>总跑量、半马 PB、全马 PB、总花费四个维度横向对比，PB 榜只统计有完赛记录的用户；
+          支持按性别与年龄段筛选，登录后额外回传「我的排名」。</p>
+        <div class="f-tags"><span>DISTANCE</span><span>PB</span><span>SPENT</span></div>
+      </div>
+
+      <div class="f-card reveal">
+        <div class="f-icon">📊</div>
+        <h3>个人战绩沉淀</h3>
+        <p>报名场次、累计花费、累计里程三张统计卡，近期完赛列表展示完赛时间与参赛号码，
+          个人最好成绩单独打 PB 徽章，跑过的每一场都留得下痕迹。</p>
+        <div class="f-tags"><span>STATS</span><span>FINISH</span><span>PB</span></div>
+      </div>
+
+      <div class="f-card reveal">
+        <div class="f-icon">➕</div>
+        <h3>自定义赛事</h3>
+        <p>数据源没覆盖的小众赛事可以自己录：填名称、类型、日期、地点、级别与费用，
+          一次提交同时建好赛事、收藏、报名三条关联记录，直接进入追踪面板。</p>
+        <div class="f-tags"><span>CUSTOM EVENT</span><span>ONE-CLICK</span></div>
+      </div>
+
+      <div class="f-card reveal">
+        <div class="f-icon">📱</div>
+        <h3>一套代码，多端交付</h3>
+        <p>Taro 4 同一份代码编译微信小程序与 H5，登录方式按端分流：小程序静默微信登录、
+          抖音端走抖音 code 换取 openid，H5 保留账号密码登录方便本地联调。</p>
+        <div class="f-tags"><span>WECHAT</span><span>DOUYIN</span><span>H5</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== Screenshots ======================== -->
+<section id="screenshots">
+  <div class="wrap">
+    <div class="sec-head is-center reveal">
+      <div class="sec-tag">App Preview</div>
+      <h2 class="sec-title">小程序界面展示</h2>
+      <p class="sec-desc">晨曦跑道主题：珊瑚橙主色 + 青柠强调色，暖白纸面与棕调暖影</p>
+    </div>
+
+    <div class="shots-grid">
+      <div class="shot reveal" onclick="openLightbox('screenshot/index.jpg')">
+        <span class="shot-hint">点击放大</span>
+        <img src="screenshot/index.jpg" alt="首页 - 赛事列表与筛选" loading="lazy">
+        <div class="shot-label">
+          <h4>首页</h4>
+          <p>赛事列表 · 搜索 · 五维筛选</p>
+        </div>
+      </div>
+
+      <div class="shot reveal" onclick="openLightbox('screenshot/rank.jpg')">
+        <span class="shot-hint">点击放大</span>
+        <img src="screenshot/rank.jpg" alt="排行 - 跑者排行榜" loading="lazy">
+        <div class="shot-label">
+          <h4>排行</h4>
+          <p>总跑量 · 半马 / 全马 PB · 总花费</p>
+        </div>
+      </div>
+
+      <div class="shot reveal" onclick="openLightbox('screenshot/favourite.jpg')">
+        <span class="shot-hint">点击放大</span>
+        <img src="screenshot/favourite.jpg" alt="关注 - 报名缴费中签追踪" loading="lazy">
+        <div class="shot-label">
+          <h4>关注</h4>
+          <p>报名 / 缴费 / 中签三维追踪 · 倒计时</p>
+        </div>
+      </div>
+
+      <div class="shot reveal" onclick="openLightbox('screenshot/profile.jpg')">
+        <span class="shot-hint">点击放大</span>
+        <img src="screenshot/profile.jpg" alt="我的 - 个人战绩统计" loading="lazy">
+        <div class="shot-label">
+          <h4>我的</h4>
+          <p>报名场次 · 累计花费 · 累计里程 · 完赛记录</p>
+        </div>
+      </div>
+
+      <div class="shot reveal" onclick="openLightbox('screenshot/addcustomize.jpg')">
+        <span class="shot-hint">点击放大</span>
+        <img src="screenshot/addcustomize.jpg" alt="添加自定义赛事" loading="lazy">
+        <div class="shot-label">
+          <h4>添加赛事</h4>
+          <p>自定义赛事 · 保存并关注</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================== Pipeline ========================== -->
+<section id="pipeline" class="section-sand">
+  <div class="wrap">
+    <div class="pipeline reveal">
+      <div class="sec-head" style="margin-bottom:0">
+        <div class="sec-tag">Data Pipeline</div>
+        <h2 class="sec-title">赛事数据是怎么来的</h2>
+        <p class="sec-desc">
+          不靠人工整理，也不把整条链路交给 AI：确定性规则负责结构化解析，LLM 只在字段缺失时联网补全，
+          每天定时增量跑一次。
+        </p>
+      </div>
+
+      <div class="flow">
+        <div class="flow-step">
+          <span class="flow-idx">STEP 01</span>
+          <h4>抓取列表卡片</h4>
+          <p>适配器抓取最酷赛事列表页，规则解析出赛事名、开赛日期、地点、报名窗口、报名链接与封面图，
+            产出标准化候选对象。</p>
+        </div>
+        <div class="flow-step">
+          <span class="flow-idx">STEP 02</span>
+          <h4>LLM 联网补全</h4>
+          <p>把卡片原始 JSON 交给 LLM 联网检索，补齐简介、路线、主办方、报名费等缺失字段，
+            再做二轮筛选过滤噪声，得到最终 JSON。</p>
+        </div>
+        <div class="flow-step">
+          <span class="flow-idx">STEP 03</span>
+          <h4>增量 diff 入库</h4>
+          <p>以赛事 ID 为增量键、关键卡片字段的 sha1 哈希判断内容是否变化，只对新增或变化的赛事重新富化，
+            原始 / 富化 / 最终三态 JSON 全量留痕，再 upsert 进正式赛事表。</p>
+        </div>
+      </div>
+
+      <div class="flow-foot">
+        <span>APScheduler 每日 06:30</span>
+        <span>防重入 + 错过补跑</span>
+        <span>来源权重与匹配状态可审计</span>
+        <span>手动触发接口 + 运行报告</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ Tech ============================ -->
+<section id="tech">
+  <div class="wrap">
+    <div class="sec-head is-center reveal">
+      <div class="sec-tag">Architecture</div>
+      <h2 class="sec-title">技术架构</h2>
+      <p class="sec-desc">前后端分离，数据管道独立成层，可单独触发与观测</p>
+    </div>
+
+    <div class="tech-grid">
+      <div class="tech-card reveal">
+        <h4>Frontend</h4>
+        <ul class="tech-list">
+          <li>Taro 4.1 跨端框架（微信 / 抖音 / H5）</li>
+          <li>React 18 + TypeScript 5</li>
+          <li>Zustand 管理登录态</li>
+          <li>Taro.request 封装（重试 · 超时 · 自动鉴权）</li>
+          <li>Sass 设计 token 全局自动注入</li>
+          <li>原生 TabBar + 自绘视觉，规避双渲染</li>
+        </ul>
+      </div>
+
+      <div class="tech-card reveal">
+        <h4>Backend</h4>
+        <ul class="tech-list">
+          <li>FastAPI 0.115 + Uvicorn</li>
+          <li>SQLAlchemy 2.0 异步 ORM</li>
+          <li>MySQL 8（Windows aiomysql / Linux asyncmy）</li>
+          <li>Pydantic 2 请求响应模型</li>
+          <li>JWT 认证 + 微信 / 抖音 / 密码登录</li>
+          <li>Alembic 版本化迁移（7 个版本）</li>
+        </ul>
+      </div>
+
+      <div class="tech-card reveal">
+        <h4>Data Pipeline</h4>
+        <ul class="tech-list">
+          <li>httpx 异步抓取 + Tenacity 指数退避</li>
+          <li>BeautifulSoup4 + lxml 规则解析</li>
+          <li>LLM 联网富化 + 二轮筛选</li>
+          <li>字段级 sha1 增量 diff</li>
+          <li>原始数据三态 JSON 留痕审计</li>
+          <li>APScheduler 定时调度 + 手动触发</li>
+        </ul>
+      </div>
+
+      <div class="tech-card reveal">
+        <h4>Engineering</h4>
+        <ul class="tech-list">
+          <li>TTLCache 筛选项内存缓存</li>
+          <li>loguru 结构化日志</li>
+          <li>构建产物自动修正脚本</li>
+          <li>启动 / 停止 / 重启脚本</li>
+          <li>设计稿 HTML 原型对齐还原</li>
+          <li>服务端与客户端分离部署</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= CTA ============================= -->
+<section class="cta">
+  <div class="cta-card reveal">
+    <h2>下一场比赛，别错过报名窗口</h2>
+    <p>用微信扫一扫或开发者工具导入即可体验；项目已开源，欢迎提 Issue 与 PR。</p>
+    <div class="cta-btns">
+      <a class="btn btn-light" href="https://github.com/andyxu1234/marathon" target="_blank" rel="noopener">⭐ Star on GitHub</a>
+      <a class="btn btn-outline" href="https://github.com/andyxu1234/marathon/blob/main/README.md" target="_blank" rel="noopener">📖 快速开始文档</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ Footer ============================ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">🏃 Marathon · 马拉松赛事追踪</div>
+    <div class="footer-links">
+      <a href="#overview">项目概览</a>
+      <a href="#features">功能亮点</a>
+      <a href="#screenshots">界面展示</a>
+      <a href="#pipeline">数据管道</a>
+      <a href="#tech">技术架构</a>
+      <a href="https://github.com/andyxu1234/marathon/issues" target="_blank" rel="noopener">Issue</a>
+    </div>
+  </div>
+  <p class="copyright">© 2026 马拉松赛事追踪小程序 · MIT License · Taro 4 + React 18 + FastAPI</p>
+</footer>
+
+<!-- =========================== Lightbox =========================== -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" aria-label="关闭预览" onclick="closeLightbox()">✕</button>
+  <img id="lightbox-img" src="" alt="界面预览">
+</div>
+
+<script>
+  // 导航栏滚动收缩
+  var navbar = document.getElementById('navbar');
+  var onScroll = function () {
+    navbar.classList.toggle('scrolled', window.scrollY > 40);
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // 滚动入场动画
+  var reveals = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry, i) {
+        if (!entry.isIntersecting) return;
+        var el = entry.target;
+        io.unobserve(el);
+        el.style.transitionDelay = Math.min(i * 70, 280) + 'ms';
+        el.classList.add('visible');
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    reveals.forEach(function (el) { io.observe(el); });
+  } else {
+    reveals.forEach(function (el) { el.classList.add('visible'); });
+  }
+
+  // 图片灯箱
+  function openLightbox(src) {
+    var box = document.getElementById('lightbox');
+    document.getElementById('lightbox-img').src = src;
+    box.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeLightbox();
+  });
+
+  // 锚点平滑滚动（滚动时不越过固定导航栏）
+  document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
+    anchor.addEventListener('click', function (e) {
+      var id = this.getAttribute('href');
+      if (id === '#' || id.length < 2) return;
+      var target = document.querySelector(id);
+      if (!target) return;
+      e.preventDefault();
+      var top = target.getBoundingClientRect().top + window.pageYOffset - 64;
+      window.scrollTo({ top: top, behavior: 'smooth' });
+    });
+  });
+</script>
+</body>
+</html>
